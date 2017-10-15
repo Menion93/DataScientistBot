@@ -76,11 +76,24 @@ public class JGTModule extends Module {
     }
 
     private String printResult(Map<String, List<List<String>>> kRankings) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+
+        for(Map.Entry entry : kRankings.entrySet()){
+            sb.append(entry.getKey());
+            sb.append("\n");
+            for(List<String> table : (List<List<String>>) entry.getValue()){
+                for(String attribute : table){
+                    sb.append("\t");
+                    sb.append(attribute);
+                }
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     private List<String> extractSchema(String userInput) {
-        return null;
+        return Arrays.asList(userInput.split(" "));
     }
 
     @Override

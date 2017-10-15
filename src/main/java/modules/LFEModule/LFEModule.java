@@ -8,6 +8,7 @@ import main.java.modules.Module;
 import main.java.modules.ThirdParty.ThirdPartyDummy;
 import main.java.utils.Helper;
 
+import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class LFEModule extends Module {
     @Override
     public List<String> reply(String userInput) {
 
+        if(handler.getSession().getDatasetPool().size() == 0)
+            return Arrays.asList("You have to add a dataset in the pool first!");
+
         STEPS currentStep = STEPS.values()[stepIndex];
 
         switch (currentStep){
@@ -35,7 +39,7 @@ public class LFEModule extends Module {
                 stepIndex++;
                 List<String> replies = new LinkedList<>();
                 replies.add("Choose the dataset you want to try the analysis");
-                replies.add(printListOfDataset());
+                replies.add(printDatasetList());
                 return replies;
             }
             case SELECT_DATASET: {
@@ -82,21 +86,39 @@ public class LFEModule extends Module {
         }
     }
 
-    private String printResult(Map<Integer, String> lfeAnalysis) {
-        return null;
+    private String printDatasetList() {
+        StringBuilder sb = new StringBuilder();
+
+        for(Dataset ds : handler.getSession().getDatasetPool()){
+            sb.append("\t");
+            sb.append(ds.getDatasetName());
+        }
+
+        return sb.toString();
     }
 
-    private Dataset getDatasetFromPool(String datasetName) {
-        return null;
+    private String printResult(Map<Integer, String> lfeAnalysis) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Map.Entry entry : lfeAnalysis.entrySet()){
+            sb.append(entry.getKey());
+            sb.append("\t");
+            sb.append(entry.getValue());
+        }
+
+        return sb.toString();
     }
 
     private String extractAndValidateDatasetName(String userInput) {
+        Dataset ds = handler.getSession().getDatasetByName(userInput);
+
+        if(ds != null)
+            return ds.getDatasetName();
+
         return null;
     }
 
-    private String printListOfDataset() {
-        return null;
-    }
 
     @Override
     public String getModuleDescription() {

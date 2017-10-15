@@ -206,4 +206,12 @@ public class MongoRepository extends DBRepository {
 
         return (Map<String,Map<String, Double>>) result.get("map");
     }
+
+    @Override
+    public void deleteBranch(String branchName) {
+        String sessionName = session.getSessionName();
+        Document query = new Document("sessionName", sessionName).append("branchName", branchName);
+        MongoCollection<Document> sessionColl = db.getCollection("SessionColl");
+        sessionColl.deleteOne(query);
+    }
 }

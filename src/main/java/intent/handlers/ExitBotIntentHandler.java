@@ -26,9 +26,7 @@ public class ExitBotIntentHandler extends IntentHandler {
 
     @Override
     public String handleIntent() {
-
         handler.isSayingGoodbye(true);
-
         return Helper.selectRandomString(EXIT_SENTENCES);
     }
 

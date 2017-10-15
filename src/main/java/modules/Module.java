@@ -4,6 +4,7 @@ import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.utils.Helper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -22,13 +23,14 @@ public abstract class Module {
         this.moduleName = moduleName;
     }
 
+    public String selectRandomSentence(String[] sentences){
+        return Helper.selectRandomString(sentences);
+    }
+
     public abstract List<String> reply(String userInput);
     public abstract String getModuleDescription();
     public void exitModule(){
         handler.changeModule(true);
-    }
-    public String selectRandomSentence(String[] sentences){
-        return Helper.selectRandomString(sentences);
     }
     public String getModuleName(){
         return this.moduleName;

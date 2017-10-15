@@ -22,22 +22,14 @@ public class DeleteBranchIntentHandler extends IntentHandler {
         if(branchName == null)
             return "Please, you need to tell me the name of the branch you want to delete";
 
-        if(branchNameIsValid()){
-            deleteBranch(branchName);
+        if(handler.getRepository().isAValidBranch(branchName)){
+            handler.getRepository().deleteBranch(branchName);
             return "Branch with id: " + branchName + "deleted";
         }
         else{
             handler.continueHandlerDiscussion(this);
             return "The branch name is not valid. Select another name";
         }
-    }
-
-    private boolean branchNameIsValid() {
-        return true;
-    }
-
-    private void deleteBranch(String branchId) {
-
     }
 
     @Override

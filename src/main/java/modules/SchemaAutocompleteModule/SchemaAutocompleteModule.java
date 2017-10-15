@@ -78,11 +78,19 @@ public class SchemaAutocompleteModule extends Module {
     }
 
     private String printResult(Map<String, Double> probabileAttribute) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+
+        for(Map.Entry entry : probabileAttribute.entrySet()){
+            sb.append(entry.getKey());
+            sb.append("\t");
+            sb.append(entry.getValue());
+        }
+
+        return sb.toString();
     }
 
     private List<String> extractSchema(String userInput) {
-        return null;
+        return Arrays.asList(userInput.split(" "));
     }
 
     @Override

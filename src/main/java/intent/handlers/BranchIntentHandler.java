@@ -34,9 +34,11 @@ public class BranchIntentHandler extends IntentHandler {
         // Bring it to the next level
         stepIndex++;
 
-        makeABranch();
-
-        return "Branch with name " + branchName +  " created\nWould you like to switch the branch now?";
+        if(handler.createNewBranch(branchName)){
+            stepIndex++;
+            return "Branch with name " + branchName + " created. Would you like to switch now?";
+        }
+        else return "Branch name is not valid, try with another name";
 
     }
 
@@ -87,10 +89,6 @@ public class BranchIntentHandler extends IntentHandler {
     @Override
     public boolean finishedTalking(){
         return finishedTalking;
-    }
-
-    public void makeABranch(){
-        // We need to save all the modules and switch to the new branch
     }
 
     @Override
