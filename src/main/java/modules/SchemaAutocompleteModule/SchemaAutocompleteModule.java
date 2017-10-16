@@ -23,6 +23,7 @@ public class SchemaAutocompleteModule extends Module {
 
     public SchemaAutocompleteModule(DataScienceModuleHandler handler) {
         super(handler, "SchemaAutocomplete");
+        allAnalysis = new HashMap<>();
         dummy = new ThirdPartyDummy();
     }
 
@@ -67,8 +68,9 @@ public class SchemaAutocompleteModule extends Module {
                     return this.reply(null);
                 }
                 else{
-                    stepIndex++;
-                    return Arrays.asList("Type the name of the dataset you want to add to the pool");
+                    stepIndex = 0;
+                    handler.switchToDefaultModule();
+                    return handler.getCurrentModule().reply("");
                 }
             }
              default:
@@ -106,15 +108,26 @@ public class SchemaAutocompleteModule extends Module {
 
     @Override
     public void loadModuleInstance() {
-        if(!firstTime){
-            DBRepository repo = handler.getRepository();
-            allAnalysis = repo.getSchemaAutocompleteAnalysis();
-        }
+        DBRepository repo = handler.getRepository();
+        allAnalysis = repo.getSchemaAutocompleteAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
-        DBRepository repo = handler.getRepository();
-        repo.saveSchemaAutocompleteAnalysis(allAnalysis);
+        if(!allAnalysis.isEmpty()){
+            DBRepository repo = handler.getRepository();
+            repo.saveSchemaAutocompleteAnalysis(allAnalysis);
+        }
+    }
+
+    @Override
+    public void resetModuleInstance() {
+        allAnalysis = new HashMap<>();
+        stepIndex = 0;
+    }
+
+    @Override
+    public void resetConversation() {
+        stepIndex = 0;
     }
 }

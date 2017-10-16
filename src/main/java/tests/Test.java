@@ -51,9 +51,9 @@ public class Test {
 
 
         MongoCollection<Document> JGTcoll = db.getCollection("JGTModuleColl");
-        JGTcoll.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
+        JGTcoll.deleteMany(new Document("sessionName", sessionName).append("analysisName", branchName));
         JGTcoll.insertOne(new Document("sessionName", sessionName)
-                .append("branchName",branchName)
+                .append("analysisName",branchName)
                 .append("map", mmap)
         );
 

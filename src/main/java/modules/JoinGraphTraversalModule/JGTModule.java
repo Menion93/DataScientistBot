@@ -22,6 +22,7 @@ public class JGTModule extends Module {
 
     public JGTModule(DataScienceModuleHandler handler) {
         super(handler, "JGT");
+        allAnalysis = new HashMap<>();
     }
 
     @Override
@@ -67,7 +68,8 @@ public class JGTModule extends Module {
                     return this.reply(null);
                 }
                 stepIndex = 0;
-                return this.reply(null);
+                handler.switchToDefaultModule();
+                return handler.getCurrentModule().reply("");
             }
 
             default:
@@ -108,15 +110,26 @@ public class JGTModule extends Module {
 
     @Override
     public void loadModuleInstance() {
-        if(!firstTime){
-            DBRepository repo = handler.getRepository();
-            allAnalysis = repo.getJGTAnalysis();
-        }
+        DBRepository repo = handler.getRepository();
+        allAnalysis = repo.getJGTAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
-        DBRepository repo = handler.getRepository();
-        repo.saveJGTAnalysis(allAnalysis);
+        if(!allAnalysis.isEmpty()){
+            DBRepository repo = handler.getRepository();
+            repo.saveJGTAnalysis(allAnalysis);
+        }
+    }
+
+    @Override
+    public void resetModuleInstance() {
+        allAnalysis = new HashMap<>();
+        stepIndex = 0;
+    }
+
+    @Override
+    public void resetConversation() {
+        stepIndex = 0;
     }
 }

@@ -24,6 +24,7 @@ public class Session {
         // Take a new id from the database and assign it to this analysis
 
         conversation = new LinkedList<>();
+        datasetsPool = new LinkedList<>();
         this.repository = repository;
     }
 
@@ -46,15 +47,18 @@ public class Session {
     }
 
     public void saveSessionInfo(){
-        repository.saveMessage(conversation);
-        repository.saveDatasetPool(datasetsPool);
+        if(conversation.size() != 0)
+            repository.saveMessage(conversation);
+        if(datasetsPool.size() != 0)
+            repository.saveDatasetPool(datasetsPool);
+
         repository.registerSession();
     }
 
     public String getBranchName(){return this.branchName; }
     public String getSessionName(){return this.sessionName;}
 
-    // Will load the conversation with branchName and sessionName
+    // Will load the conversation with analysisName and sessionName
     public void loadSession() {
 
         this.conversation = repository.getConversation();
@@ -71,6 +75,12 @@ public class Session {
                 return ds;
         }
         return null;
+    }
+
+    @Override
+    public String toString(){
+        return "Analysis name:\t" + this.getSessionName() +
+                "\n" + "Branch name:\t" + this.getBranchName();
     }
 
 }

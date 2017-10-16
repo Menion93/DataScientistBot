@@ -11,8 +11,9 @@ import java.util.List;
  */
 public class GreetingModule extends Module {
 
-    String[] GREETINGS = {"Nice to meet you", "Hello man, I'm DataScienceBot", "Hi, DataScienceBot at your service"};
-    String[] SMALLTALK = {"Lets do something useful", "Get to work lazy peon!"};
+    private String[] GREETINGS = {"Nice to meet you", "Hello man, I'm DataScienceBot", "Hi, DataScienceBot at your service"};
+    private String[] SMALLTALK = {"Lets do something useful", "Nice work, go on"};
+    private boolean firstTime;
 
 
     public GreetingModule(DataScienceModuleHandler handler){
@@ -50,6 +51,16 @@ public class GreetingModule extends Module {
 
     @Override
     public void saveModuleInstance() {
+        // Do nothing
+    }
+
+    @Override
+    public void resetModuleInstance() {
+        firstTime = true;
+    }
+
+    @Override
+    public void resetConversation() {
         // Do nothing
     }
 }

@@ -74,4 +74,28 @@ public class ModuleSubscription {
                 module.loadModuleInstance();
     }
 
+    public void resetAllModuleInstances(){
+        for(List<Module> moduleL : subscriptions.values())
+            for(Module module : moduleL )
+                module.resetModuleInstance();
+    }
+
+    public Module getModuleByName(String moduleName) {
+        for(List<Module> moduleL : subscriptions.values())
+            for(Module module : moduleL )
+                if(module.getModuleName().toLowerCase().equals(moduleName.toLowerCase()))
+                    return module;
+        return null;
+    }
+
+    public List<String> getModuleNames() {
+        List<String> moduleNames = new LinkedList<>();
+
+        for(List<Module> moduleL : subscriptions.values())
+            for(Module module : moduleL )
+                moduleNames.add(module.getModuleName());
+
+        return moduleNames;
+    }
+
 }

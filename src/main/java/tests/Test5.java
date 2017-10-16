@@ -31,13 +31,13 @@ public class Test5 {
             datasetNames.add(ds.getDatasetName());
 
         MongoCollection<Document> datasetColl = db.getCollection("DatasetColl");
-        datasetColl.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
+        datasetColl.deleteMany(new Document("sessionName", sessionName).append("analysisName", branchName));
         datasetColl.insertOne(new Document("sessionName", sessionName)
-                .append("branchName", branchName)
+                .append("analysisName", branchName)
                 .append("names", datasetNames));
 
 
-        Document document = new Document("sessionName", sessionName).append("branchName", branchName);
+        Document document = new Document("sessionName", sessionName).append("analysisName", branchName);
         MongoCollection<Document> messagesColl = db.getCollection("DatasetColl");
         List<String> retrieved = (List<String>) messagesColl.find(document).iterator().next().get("names");
         List<Dataset> datasetList = new LinkedList<>();

@@ -10,9 +10,7 @@ import org.ejml.alg.dense.linsol.lu.LinearSolverLuKJI;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Andrea on 12/10/2017.
@@ -78,11 +76,11 @@ public class MongoRepository extends DBRepository {
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
         MongoCollection<Document> JGTcoll = db.getCollection("JGTModuleColl");
-        Document result = JGTcoll.find(document).iterator().next();
+        Document result = JGTcoll.find(document).iterator().tryNext();
 
         if(result == null){
             System.out.println("JGTData not found");
-            return null;
+            return new HashMap<String,Map<String, List<List<String>>>>();
         }
 
         return (Map<String,Map<String, List<List<String>>>>) result.get("map");
@@ -93,12 +91,12 @@ public class MongoRepository extends DBRepository {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
-        MongoCollection<Document> LFEcoll = db.getCollection("JFEModuleColl");
-        Document result = LFEcoll.find(document).iterator().next();
+        MongoCollection<Document> LFEcoll = db.getCollection("LFEModuleColl");
+        Document result = LFEcoll.find(document).iterator().tryNext();
 
         if(result == null){
             System.out.println("LFEData not found");
-            return null;
+            return new HashMap<String, Map<Integer, String>>();
         }
 
         return (Map<String, Map<Integer, String>>) result.get("map");
@@ -141,11 +139,17 @@ public class MongoRepository extends DBRepository {
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
         MongoCollection<Document> messagesColl = db.getCollection("DatasetColl");
-        List<String> datasetNames = (List<String>) messagesColl.find(document).iterator().next().get("names");
         List<Dataset> datasetList = new LinkedList<>();
 
-        for(String name : datasetNames)
-            datasetList.add(new Dataset(name));
+        try{
+            List<String> datasetNames = (List<String>) messagesColl.find(document).iterator().next().get("names");
+
+
+            for(String name : datasetNames)
+                datasetList.add(new Dataset(name));
+        }
+        catch (Exception e){
+        }
 
         return datasetList;
 
@@ -197,11 +201,11 @@ public class MongoRepository extends DBRepository {
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
         MongoCollection<Document> JGTcoll = db.getCollection("SchemaAutocompleteModuleColl");
-        Document result = JGTcoll.find(document).iterator().next();
+        Document result = JGTcoll.find(document).iterator().tryNext();
 
         if(result == null){
             System.out.println("SACData not found");
-            return null;
+            return new HashMap<String,Map<String, Double>>();
         }
 
         return (Map<String,Map<String, Double>>) result.get("map");
@@ -210,8 +214,71 @@ public class MongoRepository extends DBRepository {
     @Override
     public void deleteBranch(String branchName) {
         String sessionName = session.getSessionName();
+        List<MongoCollection<Document>> collections = new LinkedList<>();
+
         Document query = new Document("sessionName", sessionName).append("branchName", branchName);
+        collections.add(db.getCollection("SessionColl"));
+        collections.add(db.getCollection("JGTModuleColl"));
+        collections.add(db.getCollection("SchemaAutocompleteModuleColl"));
+        collections.add(db.getCollection("DatasetColl"));
+        collections.add(db.getCollection("MessagesColl"));
+        collections.add(db.getCollection("LFEModuleColl"));
+
+        for(MongoCollection coll : collections)
+            coll.deleteMany(query);
+    }
+
+    @Override
+    public boolean isAValidAnalysis(String analysisName) {
+        Document query = new Document("sessionName", analysisName).append("branchName", "main");
         MongoCollection<Document> sessionColl = db.getCollection("SessionColl");
-        sessionColl.deleteOne(query);
+        MongoCursor<Document> cursor = sessionColl.find(query).iterator();
+
+        return cursor.hasNext();
+    }
+
+    @Override
+    public void deleteAnalysis(String analysisName) {
+        List<MongoCollection<Document>> collections = new LinkedList<>();
+
+        Document query = new Document("sessionName", analysisName);
+        collections.add(db.getCollection("SessionColl"));
+        collections.add(db.getCollection("SchemaAutocompleteModuleColl"));
+        collections.add(db.getCollection("JGTModuleColl"));
+        collections.add(db.getCollection("DatasetColl"));
+        collections.add(db.getCollection("MessagesColl"));
+        collections.add(db.getCollection("LFEModuleColl"));
+
+        for(MongoCollection coll : collections)
+            coll.deleteMany(query);
+    }
+
+    @Override
+    public List<String> getBranches() {
+        Document query = new Document("sessionName", session.getSessionName());
+        MongoCollection coll = db.getCollection("SessionColl");
+        MongoCursor<Document> cursor = coll.find(query).iterator();
+        List<String> branches = new LinkedList<>();
+
+        while(cursor.hasNext()){
+            Document doc = cursor.next();
+            branches.add((String) doc.get("branchName"));
+        }
+
+        return branches;
+    }
+
+    @Override
+    public List<String> getAnalysis() {
+        MongoCollection coll = db.getCollection("SessionColl");
+        MongoCursor<Document> cursor = coll.find(new Document()).iterator();
+        Set<String> analysis = new HashSet<>();
+
+        while(cursor.hasNext()){
+            Document doc = cursor.next();
+            analysis.add((String) doc.get("sessionName"));
+        }
+
+        return new LinkedList<>(analysis);
     }
 }

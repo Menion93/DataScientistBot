@@ -15,8 +15,6 @@ public abstract class Module {
 
     protected DataScienceModuleHandler handler;
     protected String moduleName;
-    protected boolean firstTime;  // It checks if the module was used or not in this analysis
-                                  // No need to load a module if it was not used
 
     public Module(DataScienceModuleHandler handler, String moduleName){
         this.handler = handler;
@@ -38,5 +36,6 @@ public abstract class Module {
     public abstract String makeRecommendation();
     public abstract void loadModuleInstance();
     public abstract void saveModuleInstance();
-
+    public abstract void resetModuleInstance();
+    public abstract void resetConversation();
 }

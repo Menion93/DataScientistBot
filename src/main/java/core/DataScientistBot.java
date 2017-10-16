@@ -18,6 +18,9 @@ public class DataScientistBot {
 
         DBRepository repo = new MongoRepository();
         DataScienceModuleHandler handler = new DataScienceModuleHandler(repo);
+        handler.deleteAnalysis("default");
+        handler.createNewAnalysis("default");
+        handler.loadAnalysis("default");
         Scanner scanner = new Scanner(System.in);
 
         // This is the main loop, where we register user input and handle the bot replies
@@ -36,4 +39,5 @@ public class DataScientistBot {
         for(String s : replies)
             System.out.println(s);
     }
+
 }

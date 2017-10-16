@@ -32,7 +32,7 @@ public class Test4 {
 
         for(MessageEntry entry : conversation){
             documents.add(new Document("sessionName", sessionName)
-                    .append("branchName",branchName)
+                    .append("analysisName",branchName)
                     .append("message", entry.getMessage())
                     .append("date", entry.getTimestamp())
                     .append("userMessage", entry.isUserMessage()));
@@ -41,7 +41,7 @@ public class Test4 {
         MongoCollection<Document> messagesColl = db.getCollection("MessagesColl");
         messagesColl.insertMany(documents);
 
-        Document document = new Document("sessionName", sessionName).append("branchName", branchName);
+        Document document = new Document("sessionName", sessionName).append("analysisName", branchName);
         MongoCursor<Document> cursor = messagesColl.find(document).iterator();
 
         List<MessageEntry> messages = new LinkedList<>();

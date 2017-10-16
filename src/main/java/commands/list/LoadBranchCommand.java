@@ -1,40 +1,40 @@
-package main.java.intent.handlers;
+package main.java.commands.list;
 
 import main.java.core.DataScienceModuleHandler;
-import main.java.intent.IntentHandler;
-import java.util.List;
+import main.java.commands.Command;
+
 
 /**
  * Created by Andrea on 09/10/2017.
  */
-public class DeleteBranchIntentHandler extends IntentHandler {
+public class LoadBranchCommand extends Command {
 
-    public String[] KEYWORDS = {"delete branch", "cancel branch", "erase branch"};
+    public String[] KEYWORDS = {"load branch"};
 
-    public String branchName;
+    private String branchName;
 
-    public DeleteBranchIntentHandler(DataScienceModuleHandler handler) {
+    public LoadBranchCommand(DataScienceModuleHandler handler) {
         super(handler);
     }
 
     @Override
-    public String handleIntent() {
+    public String handleCommand() {
+
         if(branchName == null)
-            return "Please, you need to tell me the name of the branch you want to delete";
+            return "You must give me the name of the branch you want to load";
 
         if(handler.getRepository().isAValidBranch(branchName)){
-            handler.getRepository().deleteBranch(branchName);
-            return "Branch with id: " + branchName + "deleted";
+            handler.saveCurrentInstance();
+            handler.loadBranch(branchName);
+            return "Branch loaded";
         }
-        else{
-            handler.continueHandlerDiscussion(this);
-            return "The branch name is not valid. Select another name";
-        }
+
+        return "The selected branch is not valid";
     }
 
-    @Override
-    public boolean isMyIntent(String userInput){
 
+    @Override
+    public boolean commandIsRequested(String userInput){
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);
 
         // If we did not detect our keywords, discard this intent.
@@ -49,12 +49,9 @@ public class DeleteBranchIntentHandler extends IntentHandler {
 
         return true;
 
-        // Initialize NLP tools
         //parseUserInput(userInput);
 
-        /*List<String> possibleIds = new LinkedList<>();
-
-        // Iterate through all the labelled words
+        /*
         for(CoreMap sentence: sentences) {
             // traversing the words in the current sentence
             // a CoreLabel is a CoreMap with additional token-specific methods
@@ -66,20 +63,17 @@ public class DeleteBranchIntentHandler extends IntentHandler {
                 // this is the NER label of the token
                 String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
-                // Check if it is a dobj or a noun, and add those option to the possible id set
-                if(pos.toLowerCase().contains("NN") || pos.toLowerCase().contains("obj"))
-                    possibleIds.add(pos);
+                //System.out.println(word + " " + pos + " " + ne);
             }
 
-        }
+            // this is the parse tree of the current sentence
+            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
 
-        branchName = checkPossibleBranchNames(possibleIds);*/
+            // this is the Stanford dependency graph of the current sentence
+            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+        }*/
 
-        //return true;
-    }
 
-    public String checkPossibleBranchNames(List<String> ids){
-        return "";
     }
 
 }

@@ -3,11 +3,10 @@ package main.java.core;
 import main.java.ModuleSubscription;
 import main.java.Session.Session;
 import main.java.database.DBRepository;
-import main.java.intent.IntentHandler;
-import main.java.intent.IntentTranslator;
+import main.java.commands.Command;
+import main.java.commands.CommandHandler;
 import main.java.modules.GreetingModule;
 import main.java.modules.Module;
-import main.java.modules.ModuleSelectionModule;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,19 +17,17 @@ import java.util.List;
 public class DataScienceModuleHandler {
 
     private DBRepository repository;
-
+    private Module defaultModule;
     private Module currentModule;
-    private ModuleSelectionModule selectionModule;
     private ModuleSubscription subscriptions;
-    private IntentHandler currentIntent;
+    private Command currentIntent;
     private Session session;
-
     private boolean sayingGoodbye;
     private boolean changeModule;
 
     public DataScienceModuleHandler(DBRepository repository){
-        currentModule = new GreetingModule(this);
-        selectionModule = new ModuleSelectionModule(this);
+        defaultModule = new GreetingModule(this);
+        currentModule = defaultModule;
         subscriptions = new ModuleSubscription(this);
         this.session = new Session(repository);
         this.repository = repository;
@@ -67,23 +64,17 @@ public class DataScienceModuleHandler {
             }
         }
 
-
         // If no special command is given, continue with the normal workflow
         List<String> moduleReplies = currentModule.reply(userInput);
         replies.addAll(moduleReplies);
-
-        if(isChangingModule()){
-            currentModule = selectionModule;
-            replies.add(selectionModule.replyOnLoad());
-        }
 
         session.logMessage(replies, false);
         return replies;
     }
 
     public String specialInputDetected(String userInput){
-        IntentTranslator translator = new IntentTranslator(this);
-        return translator.matchUserInputToIntent(userInput);
+        CommandHandler translator = new CommandHandler(this);
+        return translator.matchUserInputToCommand(userInput);
     }
 
     public void saveCurrentInstance(){
@@ -92,7 +83,6 @@ public class DataScienceModuleHandler {
     }
 
     public void loadBranch(String branchName) {
-        saveCurrentInstance();
         session.setBranchName(branchName);
         session.loadSession();
         subscriptions.loadAllModuleInstances();
@@ -116,12 +106,36 @@ public class DataScienceModuleHandler {
         return false;
     }
 
-    public void continueHandlerDiscussion(IntentHandler intent){ this.currentIntent = intent;}
+    public boolean createNewAnalysis(String analysisName) {
+        if(!repository.isAValidAnalysis(analysisName)){
+            String prevAnalysis = session.getBranchName();
+            String prevBranchName = session.getBranchName();
+            session.setSessionInfo(analysisName, "main");
+
+            session.saveSessionInfo();
+
+            // Now switch to the previous session info
+            session.setSessionInfo(prevAnalysis, prevBranchName);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void deleteAnalysis(String analysisName){
+        repository.deleteAnalysis(analysisName);
+    }
+
+    public void loadAnalysis(String analysisName) {
+        session.setSessionInfo(analysisName, "main");
+        session.loadSession();
+        subscriptions.resetAllModuleInstances();
+    }
+
+    public void continueHandlerDiscussion(Command intent){ this.currentIntent = intent;}
     public void changeModule(boolean changing){
         this.changeModule = changing;
-    }
-    public boolean isChangingModule(){
-        return this.changeModule;
     }
     public boolean isSayingGoodbye() {
         return sayingGoodbye;
@@ -135,7 +149,6 @@ public class DataScienceModuleHandler {
     public DBRepository getRepository() { return repository; }
     public ModuleSubscription getModuleSubscription(){ return subscriptions; }
     public Session getSession(){return this.session;}
-
-
-
+    public void setCurrentModule(Module currentModule) { this.currentModule = currentModule; }
+    public void switchToDefaultModule() { currentModule = defaultModule; }
 }

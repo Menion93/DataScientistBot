@@ -32,4 +32,8 @@ public abstract class DBRepository {
     public abstract void saveSchemaAutocompleteAnalysis(Map<String, Map<String, Double>> allAnalysis);
     public abstract Map<String,Map<String,Double>> getSchemaAutocompleteAnalysis();
     public abstract void deleteBranch(String branchName);
+    public abstract boolean isAValidAnalysis(String analysisName);
+    public abstract void deleteAnalysis(String analysisName);
+    public abstract List<String> getBranches();
+    public abstract List<String> getAnalysis();
 }

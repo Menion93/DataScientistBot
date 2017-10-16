@@ -23,6 +23,7 @@ public class LFEModule extends Module {
 
     public LFEModule(DataScienceModuleHandler handler) {
         super(handler, "LFE");
+        dataset2transfor = new HashMap<>();
     }
 
     @Override
@@ -132,15 +133,26 @@ public class LFEModule extends Module {
 
     @Override
     public void loadModuleInstance() {
-        if(!firstTime){
-            DBRepository repository = handler.getRepository();
-            dataset2transfor = repository.getLFEAnalysis();
-        }
+        DBRepository repository = handler.getRepository();
+        dataset2transfor = repository.getLFEAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
-        DBRepository repository = handler.getRepository();
-        repository.saveLFEAnalysis(dataset2transfor);
+        if(!dataset2transfor.isEmpty()){
+            DBRepository repository = handler.getRepository();
+            repository.saveLFEAnalysis(dataset2transfor);
+        }
+    }
+
+    @Override
+    public void resetModuleInstance() {
+        Map<String, Map<Integer, String>> dataset2transfor = new HashMap<>();
+        stepIndex = 0;
+    }
+
+    @Override
+    public void resetConversation() {
+        stepIndex = 0;
     }
 }
