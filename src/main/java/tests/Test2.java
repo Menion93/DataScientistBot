@@ -2,7 +2,7 @@ package main.java.tests;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import main.java.Session.MessageEntry;
+import main.java.session.MessageEntry;
 import main.java.database.MongoConnection;
 import org.bson.Document;
 

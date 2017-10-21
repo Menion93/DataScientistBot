@@ -3,7 +3,6 @@ package main.java.tests;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import main.java.database.MongoConnection;
-import main.java.modules.JoinGraphTraversalModule.JGTModule;
 import org.bson.Document;
 
 import java.util.HashMap;

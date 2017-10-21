@@ -1,7 +1,7 @@
 package main.java.core;
 
 import main.java.ModuleSubscription;
-import main.java.Session.Session;
+import main.java.session.Session;
 import main.java.database.DBRepository;
 import main.java.commands.Command;
 import main.java.commands.CommandHandler;

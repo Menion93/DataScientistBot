@@ -19,12 +19,12 @@ public class SchemaAutocompleteModule extends Module {
     private enum STEPS {INSTRUCTIONS, SCHEMA_INPUT, ANOTHER_SCHEMA};
     private int stepIndex;
     private Map<String, Map<String,Double>> allAnalysis;
-    public ThirdPartyDummy dummy;
+    private SACTMapper sactool;
 
     public SchemaAutocompleteModule(DataScienceModuleHandler handler) {
         super(handler, "SchemaAutocomplete");
         allAnalysis = new HashMap<>();
-        dummy = new ThirdPartyDummy();
+        sactool = new SACTMapper();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SchemaAutocompleteModule extends Module {
                     Map<String,Double> singleAnalysis = allAnalysis.get(orderedSchema);
                     String result;
                     if(singleAnalysis == null){
-                        Map<String,Double> anResult = dummy.getProbabileAttributes(schema);
+                        Map<String,Double> anResult = sactool.getProbabileAttributes(schema);
                         allAnalysis.put(orderedSchema, anResult);
                         result = printResult(anResult);
                     }
@@ -73,7 +73,7 @@ public class SchemaAutocompleteModule extends Module {
                     return handler.getCurrentModule().reply("");
                 }
             }
-             default:
+            default:
                 return Arrays.asList("Can you repeat please?");
         }
 
@@ -86,6 +86,7 @@ public class SchemaAutocompleteModule extends Module {
             sb.append(entry.getKey());
             sb.append("\t");
             sb.append(entry.getValue());
+            sb.append("\n");
         }
 
         return sb.toString();

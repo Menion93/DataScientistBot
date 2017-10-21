@@ -1,8 +1,8 @@
 package main.java.database;
 
-import main.java.Dataset.Dataset;
-import main.java.Session.MessageEntry;
-import main.java.Session.Session;
+import main.java.dataset.Dataset;
+import main.java.session.MessageEntry;
+import main.java.session.Session;
 
 import java.util.List;
 import java.util.Map;

@@ -1,14 +1,10 @@
 package main.java.modules.LFEModule;
 
-import main.java.Dataset.Dataset;
+import main.java.dataset.Dataset;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
-import main.java.modules.JoinGraphTraversalModule.JGTModule;
 import main.java.modules.Module;
-import main.java.modules.ThirdParty.ThirdPartyDummy;
-import main.java.utils.Helper;
 
-import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 
@@ -17,13 +13,18 @@ import java.util.List;
  */
 public class LFEModule extends Module {
 
-    private enum STEPS {PRINT_DATASET, SELECT_DATASET, CONFIRM_TRANSFORMATION};
+    private enum STEPS {PRINT_DATASET, SELECT_DATASET, SELECT_TARGET, CONFIRM_TRANSFORMATION};
     private Map<String, Map<Integer, String>> dataset2transfor;
     private int stepIndex;
+    private String currentDatasetName;
+    private Dataset currentDataset;
+    private Map<Integer, String> anResult;
+    private LFEMapper lfetool;
 
     public LFEModule(DataScienceModuleHandler handler) {
         super(handler, "LFE");
         dataset2transfor = new HashMap<>();
+        lfetool = new LFEMapper();
     }
 
     @Override
@@ -45,17 +46,24 @@ public class LFEModule extends Module {
             }
             case SELECT_DATASET: {
                 // Extract and validate the name,
-                String datasetName = extractAndValidateDatasetName(userInput);
+                currentDatasetName = extractAndValidateDatasetName(userInput);
 
-                if(datasetName != null){
-                    Map<Integer, String> analysis = dataset2transfor.get(datasetName);
+                if(currentDatasetName != null){
+                    return Arrays.asList("Now specify the target class");
+                }
+                return Arrays.asList("I could not found the dataset, can you rewrite it?");
+            }
+            case SELECT_TARGET: {
+                String target = extractAndValidateTarget(userInput);
+
+                if(target != null){
+                    Map<Integer, String> analysis = dataset2transfor.get(currentDatasetName);
                     String result;
 
                     if(analysis == null){
-                        ThirdPartyDummy tpd = new ThirdPartyDummy();
-                        Dataset ds = handler.getSession().getDatasetByName(datasetName);
-                        Map<Integer, String> anResult = tpd.getLFEAnalysis(ds);
-                        dataset2transfor.put(datasetName, anResult);
+                        Dataset ds = handler.getSession().getDatasetByName(currentDatasetName);
+                        anResult = lfetool.getLFEAnalysis(ds, target);
+                        dataset2transfor.put(currentDatasetName, anResult);
                         result =  printResult(anResult);
                     }
                     else{
@@ -68,13 +76,13 @@ public class LFEModule extends Module {
                     stepIndex++;
                     return replies;
                 }
-                return Arrays.asList("I could not find the dataset, can you rewrite it?");
+                return Arrays.asList("The target is not valid");
+
             }
             case CONFIRM_TRANSFORMATION: {
                 if(userInput.contains("yes")){
-                    ThirdPartyDummy dummy = new ThirdPartyDummy();
-                    String newName = dummy.applyTransformationAndSave();
-                    handler.getSession().getDatasetPool().add(new Dataset(newName));
+                    lfetool.applyTransformationAndSave(currentDataset,
+                            anResult, currentDatasetName+"-transformed");
                     stepIndex -= 2;
                     return this.reply(null);
                 }
@@ -87,12 +95,22 @@ public class LFEModule extends Module {
         }
     }
 
+    private String extractAndValidateTarget(String userInput) {
+        Map<String, List<Double>> numericalAtt = currentDataset.getNumericalAttributes();
+
+        if(numericalAtt.containsKey(userInput))
+            return userInput;
+
+        return null;
+    }
+
     private String printDatasetList() {
         StringBuilder sb = new StringBuilder();
 
         for(Dataset ds : handler.getSession().getDatasetPool()){
             sb.append("\t");
-            sb.append(ds.getDatasetName());
+            sb.append(ds.getDescription());
+            sb.append("\n");
         }
 
         return sb.toString();
@@ -112,10 +130,10 @@ public class LFEModule extends Module {
     }
 
     private String extractAndValidateDatasetName(String userInput) {
-        Dataset ds = handler.getSession().getDatasetByName(userInput);
+        currentDataset = handler.getSession().getDatasetByName(userInput);
 
-        if(ds != null)
-            return ds.getDatasetName();
+        if(currentDataset != null)
+            return currentDataset.getDatasetName();
 
         return null;
     }

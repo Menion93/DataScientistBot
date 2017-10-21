@@ -1,6 +1,6 @@
 package main.java.modules.ThirdParty;
 
-import main.java.Dataset.Dataset;
+import main.java.dataset.Dataset;
 
 import java.util.*;
 
@@ -34,7 +34,7 @@ public class ThirdPartyDummy {
         return join2AttrSchema;
     }
 
-    public Map<Integer, String> getLFEAnalysis(Dataset ds){
+    public Map<Integer, String> getLFEAnalysis(Dataset ds, String target){
         Map<Integer, String> result = new HashMap<>();
          result.put(0,"sqrt");
          result.put(3,"log");

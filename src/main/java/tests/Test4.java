@@ -3,12 +3,10 @@ package main.java.tests;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import main.java.Session.MessageEntry;
+import main.java.session.MessageEntry;
 import main.java.database.MongoConnection;
 import org.bson.Document;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -3,13 +3,10 @@ package main.java.database;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import main.java.Dataset.Dataset;
-import main.java.Session.MessageEntry;
+import main.java.dataset.Dataset;
+import main.java.session.MessageEntry;
 import org.bson.Document;
-import org.ejml.alg.dense.linsol.lu.LinearSolverLuKJI;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**

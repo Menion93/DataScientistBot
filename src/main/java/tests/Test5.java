@@ -2,7 +2,7 @@ package main.java.tests;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import main.java.Dataset.Dataset;
+import main.java.dataset.Dataset;
 import main.java.database.MongoConnection;
 import org.bson.Document;
 

@@ -1,7 +1,7 @@
 package main.java;
 
 import main.java.core.DataScienceModuleHandler;
-import main.java.modules.JoinGraphTraversalModule.JGTModule;
+import main.java.modules.JGTModule.JGTModule;
 import main.java.modules.LFEModule.LFEModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
@@ -36,8 +36,8 @@ public class ModuleSubscription {
 
         List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
 
-        List<Module> featureEngineeringModules = subscriptions.get(PIPELINE_STEPS.FEATURE_ENGINEERING);
-        featureEngineeringModules.add(new LFEModule(handler));
+        //List<Module> featureEngineeringModules = subscriptions.get(PIPELINE_STEPS.FEATURE_ENGINEERING);
+        //featureEngineeringModules.add(new LFEModule(handler));
 
         List<Module> modelSelectionModules = subscriptions.get(PIPELINE_STEPS.MODEL_SELECTION);
         List<Module> evaluationModules = subscriptions.get(PIPELINE_STEPS.EVALUATION);
