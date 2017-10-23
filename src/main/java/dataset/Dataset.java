@@ -2,6 +2,7 @@ package main.java.dataset;
 
 import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Andrea on 12/10/2017.
@@ -79,19 +80,22 @@ public class Dataset {
         return schema;
     }
 
-    public String getDescription(){
+    @Override
+    public String toString(){
         return "Name of the dataset:\t" + this.getDatasetName() + "\n" +
                 "Schema:\t" + this.schema.toString();
     }
 
-    public void addNumericalAttribute(String string, double[] column) {
-        // TODO Auto-generated method stub
-
+    public void addNumericalAttribute(String attr, double[] column) {
+        this.numerical.put(attr, Arrays.stream(column).mapToObj(d -> d).collect(Collectors.toList()));
     }
 
-    public void copy(Dataset ds) {
-        // TODO Auto-generated method stub
+    public void addCategoticalAttribute(String attr, String[] column) {
+        this.categorical.put(attr, Arrays.asList(column));
+    }
 
+    public boolean hasColumn(String column) {
+        return categorical.containsKey(column) || numerical.containsKey(column);
     }
 
 }

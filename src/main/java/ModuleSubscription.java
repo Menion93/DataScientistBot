@@ -2,9 +2,9 @@ package main.java;
 
 import main.java.core.DataScienceModuleHandler;
 import main.java.modules.JGTModule.JGTModule;
-import main.java.modules.LFEModule.LFEModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
+import main.java.modules.preprocessing.ColumnWranglerModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ public class ModuleSubscription {
         datasetResearchModules.add(new JGTModule(handler));
 
         List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
+        dataIntegrationModules.add(new ColumnWranglerModule(handler));
 
         //List<Module> featureEngineeringModules = subscriptions.get(PIPELINE_STEPS.FEATURE_ENGINEERING);
         //featureEngineeringModules.add(new LFEModule(handler));

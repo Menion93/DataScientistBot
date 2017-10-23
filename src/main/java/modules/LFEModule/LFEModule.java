@@ -41,7 +41,7 @@ public class LFEModule extends Module {
                 stepIndex++;
                 List<String> replies = new LinkedList<>();
                 replies.add("Choose the dataset you want to try the analysis");
-                replies.add(printDatasetList());
+                replies.add(handler.getSession().printDatasetList());
                 return replies;
             }
             case SELECT_DATASET: {
@@ -81,8 +81,7 @@ public class LFEModule extends Module {
             }
             case CONFIRM_TRANSFORMATION: {
                 if(userInput.contains("yes")){
-                    lfetool.applyTransformationAndSave(currentDataset,
-                            anResult, currentDatasetName+"-transformed");
+                    lfetool.applyTransformationAndSave(currentDataset, anResult);
                     stepIndex -= 2;
                     return this.reply(null);
                 }
@@ -102,18 +101,6 @@ public class LFEModule extends Module {
             return userInput;
 
         return null;
-    }
-
-    private String printDatasetList() {
-        StringBuilder sb = new StringBuilder();
-
-        for(Dataset ds : handler.getSession().getDatasetPool()){
-            sb.append("\t");
-            sb.append(ds.getDescription());
-            sb.append("\n");
-        }
-
-        return sb.toString();
     }
 
     private String printResult(Map<Integer, String> lfeAnalysis) {

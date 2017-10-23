@@ -83,4 +83,16 @@ public class Session {
                 "\n" + "Branch name:\t" + this.getBranchName();
     }
 
+    public String printDatasetList() {
+        StringBuilder sb = new StringBuilder();
+
+        for(Dataset ds : datasetsPool){
+            sb.append("\t");
+            sb.append(ds.getDescription());
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
 }

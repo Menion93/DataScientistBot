@@ -92,4 +92,10 @@ public class Transformations {
 
         return result;
     }
+
+    public double mean(double[] arr) {
+        long total = Arrays.stream(arr).count();
+        double sum = Arrays.stream(arr).sum();
+        return sum/total;
+    }
 }

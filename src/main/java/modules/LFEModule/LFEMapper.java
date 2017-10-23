@@ -59,15 +59,13 @@ public class LFEMapper{
         return copyResult;
     }
 
-    public void applyTransformationAndSave(Dataset ds, Map<Integer, String> anResult, String datasetName) {
+    public void applyTransformationAndSave(Dataset ds, Map<Integer, String> anResult) {
     	// Apply the transformation
-    	Dataset newDataset = new Dataset(datasetName);
-    	newDataset.copy(ds);
-    	
+
     	for(Map.Entry<Integer, String> entry : anResult.entrySet()){
     		double[] column = transform(entry.getKey(), entry.getValue(), ds);
     		String attrName = ds.getSchema().get(entry.getKey());
-    		newDataset.addNumericalAttribute(attrName + "-" + entry.getValue(), column);
+			ds.addNumericalAttribute(attrName + "-" + entry.getValue(), column);
     		
     	}
     }
