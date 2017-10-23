@@ -24,8 +24,8 @@ public class Test5 {
 
         List<String> datasetNames = new LinkedList<>();
         List<Dataset> dlist = new LinkedList<>();
-        dlist.add(new Dataset("lol"));
-        dlist.add(new Dataset("ciao"));
+        dlist.add(new Dataset("lol","root", "from", false));
+        dlist.add(new Dataset("ciao", "root", "from", false));
 
         for(Dataset ds : dlist)
             datasetNames.add(ds.getDatasetName());
@@ -43,6 +43,6 @@ public class Test5 {
         List<Dataset> datasetList = new LinkedList<>();
 
         for(String name : retrieved)
-            datasetList.add(new Dataset(name));
+            datasetList.add(new Dataset(name, "root", "from", false));
     }
 }

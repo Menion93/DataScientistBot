@@ -13,10 +13,10 @@ public class MLModule extends Module {
 
     private enum STEPS {INSTRUCTION, DATASET_SELECTION, TARGET_SELECTION, MODEL_SELECTION, RUN_MORE};
     private int stepIndex;
-    private Map<String, String> ds2model;
-    private Map<String>
+    private Map<String, Model> ds2model;
     private Dataset currentDataset;
     private String currentTarget;
+    private Model currentModule;
     private MachineAlgorithms models = new MachineAlgorithms();
 
     public MLModule(DataScienceModuleHandler handler) {
@@ -64,21 +64,21 @@ public class MLModule extends Module {
             case MODEL_SELECTION: {
                 String modelSelected = userInput;
                 if(models.validateModel(userInput)){
-                    models.fitAndEvaluate(modelSelected);
-                    stepIndex -= 2;
-                    return this.reply(null);
+                    currentModule = models.fitAndEvaluate(modelSelected);
+                    ds2model.put(currentDataset.getDatasetName(), currentModule);
+                    stepIndex++;
+                    return Arrays.asList(currentModule.printEvaluation(),
+                            "You want to train another model?");
                 }
-                stepIndex = 0;
-                return this.reply(null);
+                return Arrays.asList("Model selected not found");
             }
 
             case RUN_MORE: {
                 if(userInput.contains("yes")){
-                    lfetool.applyTransformationAndSave(currentDataset, anResult);
-                    stepIndex -= 2;
-                    return this.reply(null);
+                    stepIndex -=2;
+                    return this.reply(currentTarget);
                 }
-                stepIndex = 0;
+                this.resetConversation();
                 return this.reply(null);
             }
 
@@ -133,6 +133,6 @@ public class MLModule extends Module {
 
     @Override
     public void resetConversation() {
-
+        stepIndex = 0;
     }
 }

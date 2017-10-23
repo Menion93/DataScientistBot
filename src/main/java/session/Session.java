@@ -3,7 +3,6 @@ package main.java.session;
 import main.java.dataset.Dataset;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,8 +48,9 @@ public class Session {
     public void saveSessionInfo(){
         if(conversation.size() != 0)
             repository.saveMessage(conversation);
-        if(datasetsPool.size() != 0)
-            repository.saveDatasetPool(datasetsPool);
+
+        for(Dataset ds : datasetsPool)
+            ds.save();
 
         repository.registerSession();
     }
@@ -88,7 +88,7 @@ public class Session {
 
         for(Dataset ds : datasetsPool){
             sb.append("\t");
-            sb.append(ds.getDescription());
+            sb.append(ds.toString());
             sb.append("\n");
         }
 

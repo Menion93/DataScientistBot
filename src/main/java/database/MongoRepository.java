@@ -6,7 +6,6 @@ import com.mongodb.client.MongoDatabase;
 import main.java.dataset.Dataset;
 import main.java.session.MessageEntry;
 import org.bson.Document;
-
 import java.util.*;
 
 /**
@@ -135,39 +134,23 @@ public class MongoRepository extends DBRepository {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
-        MongoCollection<Document> messagesColl = db.getCollection("DatasetColl");
+        MongoCollection<Document> datasetColl = db.getCollection("DatasetMetadataColl");
         List<Dataset> datasetList = new LinkedList<>();
 
-        try{
-            List<String> datasetNames = (List<String>) messagesColl.find(document).iterator().next().get("names");
+        MongoCursor<Document> datasets = datasetColl.find(document).iterator();
 
-
-            for(String name : datasetNames)
-                datasetList.add(new Dataset(name));
-        }
-        catch (Exception e){
+        while(datasets.hasNext()){
+            Document ds = datasets.next();
+            datasetList.add(new Dataset(ds.getString("name"),
+                    ds.getString("root"),
+                    ds.getString("from"),
+                    false,
+                    this));
         }
 
         return datasetList;
-
     }
 
-    @Override
-    public void saveDatasetPool(List<Dataset> datasetsPool) {
-        String sessionName = session.getSessionName();
-        String branchName = session.getBranchName();
-
-        List<String> datasetNames = new LinkedList<>();
-
-        for(Dataset ds : datasetsPool)
-            datasetNames.add(ds.getDatasetName());
-
-        MongoCollection<Document> datasetColl = db.getCollection("DatasetColl");
-        datasetColl.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
-        datasetColl.insertOne(new Document("sessionName", sessionName)
-                .append("branchName", branchName)
-                .append("names", datasetNames));
-    }
 
     @Override
     public void registerSession() {
@@ -217,7 +200,7 @@ public class MongoRepository extends DBRepository {
         collections.add(db.getCollection("SessionColl"));
         collections.add(db.getCollection("JGTModuleColl"));
         collections.add(db.getCollection("SchemaAutocompleteModuleColl"));
-        collections.add(db.getCollection("DatasetColl"));
+        collections.add(db.getCollection("DatasetMetadataColl"));
         collections.add(db.getCollection("MessagesColl"));
         collections.add(db.getCollection("LFEModuleColl"));
 
@@ -242,7 +225,7 @@ public class MongoRepository extends DBRepository {
         collections.add(db.getCollection("SessionColl"));
         collections.add(db.getCollection("SchemaAutocompleteModuleColl"));
         collections.add(db.getCollection("JGTModuleColl"));
-        collections.add(db.getCollection("DatasetColl"));
+        collections.add(db.getCollection("DatasetMetadataColl"));
         collections.add(db.getCollection("MessagesColl"));
         collections.add(db.getCollection("LFEModuleColl"));
 
@@ -278,4 +261,53 @@ public class MongoRepository extends DBRepository {
 
         return new LinkedList<>(analysis);
     }
+
+    @Override
+    public void saveDataset(Dataset dataset) {
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
+
+        MongoCollection<Document> datasetMetadataColl = db.getCollection("DatasetMetadataColl");
+        Document queryDS = new Document("sessionName", sessionName)
+                .append("branchName", branchName)
+                .append("datasetName", dataset.getDatasetName());
+        datasetMetadataColl.deleteOne(queryDS);
+        Document insertQuery = new Document("sessionName", sessionName)
+                .append("branchName", branchName)
+                .append("datasetName", dataset.getDatasetName())
+                .append("root", dataset.getRoot())
+                .append("from", dataset.getFrom());
+
+        datasetMetadataColl.insertOne(insertQuery);
+
+        if(dataset.isNew()){
+            MongoCollection<Document> datasetColl = db.getCollection("DatasetColl");
+            Document insertQuery2 = new Document("name", dataset.getDatasetName())
+                    .append("data",
+                            new Document("numerical",dataset.getNumericalAttributes())
+                                    .append("categorical", dataset.getCategoricalAttributes()));
+            datasetColl.insertOne(insertQuery2);
+
+        }
+
+    }
+
+    @Override
+    public void loadData(Dataset dataset) {
+        MongoCollection<Document> datasetColl = db.getCollection("DatasetColl");
+        Document mongoDataset = null;
+        try{
+            Document query = new Document("name", dataset.getDatasetName());
+            mongoDataset = datasetColl.find(query).iterator().next();
+        }
+        catch(Exception ex){}
+
+        if(mongoDataset != null){
+            Document data = (Document) mongoDataset.get("data");
+            dataset.setNumerical((Map<String, List<Double>>) data.get("numerical"));
+            dataset.setCategorical((Map<String, List<String>>) data.get("categorical"));
+        }
+
+    }
+
 }

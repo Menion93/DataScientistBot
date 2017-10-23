@@ -27,7 +27,6 @@ public abstract class DBRepository {
     public abstract boolean isAValidBranch(String branchName);
     public abstract List<MessageEntry> getConversation();
     public abstract List<Dataset> getDatasetsPool();
-    public abstract void saveDatasetPool(List<Dataset> datasetsPool);
     public abstract void registerSession();
     public abstract void saveSchemaAutocompleteAnalysis(Map<String, Map<String, Double>> allAnalysis);
     public abstract Map<String,Map<String,Double>> getSchemaAutocompleteAnalysis();
@@ -36,4 +35,6 @@ public abstract class DBRepository {
     public abstract void deleteAnalysis(String analysisName);
     public abstract List<String> getBranches();
     public abstract List<String> getAnalysis();
+    public abstract void saveDataset(Dataset dataset);
+    public abstract void loadData(Dataset dataset);
 }

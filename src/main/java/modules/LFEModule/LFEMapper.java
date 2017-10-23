@@ -59,20 +59,10 @@ public class LFEMapper{
         return copyResult;
     }
 
-    public void applyTransformationAndSave(Dataset ds, Map<Integer, String> anResult) {
-    	// Apply the transformation
 
-    	for(Map.Entry<Integer, String> entry : anResult.entrySet()){
-    		double[] column = transform(entry.getKey(), entry.getValue(), ds);
-    		String attrName = ds.getSchema().get(entry.getKey());
-			ds.addNumericalAttribute(attrName + "-" + entry.getValue(), column);
-    		
-    	}
-    }
-    
     private double[] transform(int attrIndex, String transformation, Dataset ds){
     	
-    	List<Double> col = ds.getNumericalAttributes().get(ds.getSchema().get(attrIndex));
+    	List<Double> col = ds.getNumericalAttribute(ds.getSchema().get(attrIndex));
     	double[] colArr = col.stream().mapToDouble(d -> d).toArray();
     	
     	Transformations transformer = new Transformations();

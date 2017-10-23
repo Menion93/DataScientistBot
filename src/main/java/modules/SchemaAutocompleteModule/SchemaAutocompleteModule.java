@@ -3,7 +3,6 @@ package main.java.modules.SchemaAutocompleteModule;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
-import main.java.modules.ThirdParty.ThirdPartyDummy;
 import main.java.utils.Helper;
 
 import java.util.Arrays;

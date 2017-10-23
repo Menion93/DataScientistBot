@@ -70,23 +70,10 @@ public class LFEModule extends Module {
                         result = printResult(analysis);
                     }
 
-                    List<String> replies = new LinkedList<>();
-                    replies.add(result);
-                    replies.add("Would you like to apply those transformation?");
-                    stepIndex++;
-                    return replies;
+                    this.resetConversation();
+                    return Arrays.asList(result);
                 }
                 return Arrays.asList("The target is not valid");
-
-            }
-            case CONFIRM_TRANSFORMATION: {
-                if(userInput.contains("yes")){
-                    lfetool.applyTransformationAndSave(currentDataset, anResult);
-                    stepIndex -= 2;
-                    return this.reply(null);
-                }
-                stepIndex = 0;
-                return this.reply(null);
             }
 
             default:

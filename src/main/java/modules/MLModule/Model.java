@@ -19,4 +19,5 @@ public abstract class Model {
 
     public abstract void fit(Dataset dataset);
     public abstract List<Prediction> predict(Dataset dataset);
+    public abstract String printEvaluation();
 }

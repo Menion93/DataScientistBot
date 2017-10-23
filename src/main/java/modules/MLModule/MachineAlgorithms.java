@@ -9,4 +9,8 @@ public class MachineAlgorithms {
     public boolean validateModel(String userInput) {
         return false;
     }
+
+    public Model fitAndEvaluate(String modelSelected) {
+        return null;
+    }
 }
