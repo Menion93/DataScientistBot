@@ -310,4 +310,13 @@ public class MongoRepository extends DBRepository {
 
     }
 
+    @Override
+    public boolean existDataset(String newName) {
+        return db.getCollection("DatasetColl")
+                .find(new Document("name", newName))
+                .iterator()
+                .hasNext();
+
+    }
+
 }

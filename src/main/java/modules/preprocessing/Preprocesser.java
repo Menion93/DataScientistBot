@@ -84,9 +84,9 @@ public class Preprocesser {
             return deleteColumn(ds, attribute);
 
         double[] column = transform(attribute, transformation, ds);
+        ds.addNumericalAttribute(attribute+"_"+transformation, column);
 
         return true;
-
     }
 
     private double[] transform(String attr, String transformation, Dataset ds){

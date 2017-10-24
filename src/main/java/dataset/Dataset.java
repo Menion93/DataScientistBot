@@ -29,6 +29,11 @@ public class Dataset {
         this.repository = repo;
     }
 
+    public Dataset(DBRepository repo){
+        this.repository = repo;
+        newDataset = true;
+    }
+
 
     public Double[][] getNumericalAsDouble(){
         if(numerical == null)
@@ -113,24 +118,28 @@ public class Dataset {
         if(numerical == null)
             repository.loadData(this);
         this.numerical.put(attr, Arrays.stream(column).mapToObj(d -> d).collect(Collectors.toList()));
+        this.schema.add(attr);
     }
 
     public void addCategoticalAttribute(String attr, String[] column) {
         if(categorical == null)
             repository.loadData(this);
         this.categorical.put(attr, Arrays.asList(column));
+        this.schema.add(attr);
     }
 
     public void addNumericalAttribute(String attr, List<Double> column) {
         if(numerical == null)
             repository.loadData(this);
         this.numerical.put(attr, column);
+        this.schema.add(attr);
     }
 
     public void addCategoticalAttribute(String attr, List<String> column) {
         if(categorical == null)
             repository.loadData(this);
         this.categorical.put(attr, column);
+        this.schema.add(attr);
     }
 
     public boolean hasColumn(String column) {
@@ -139,35 +148,46 @@ public class Dataset {
         return categorical.containsKey(column) || numerical.containsKey(column);
     }
 
+    public void copyData(Dataset ds) {
+        for(String key : ds.getCategoricalAttributes().keySet())
+            this.categorical.put(key, ds.getCategoricalAttribute(key));
+
+        for(String key : ds.getNumericalAttributes().keySet())
+            this.numerical.put(key, ds.getNumericalAttribute(key));
+
+        this.schema = ds.getSchema();
+    }
+
     public String getDatasetName() {
         return datasetName;
     }
-
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
-
     public void save() {
         repository.saveDataset(this);
     }
-
     public String getRoot() {
         return root;
     }
-
     public Object getFrom() {
         return from;
     }
-
     public boolean isNew() {
         return newDataset;
     }
-
     public void setCategorical(Map<String, List<String>> categorical) {
         this.categorical = categorical;
     }
-
     public void setNumerical(Map<String, List<Double>> numerical) {
         this.numerical = numerical;
     }
+    public void setRoot(String root) {
+        this.root = root;
+    }
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+
 }

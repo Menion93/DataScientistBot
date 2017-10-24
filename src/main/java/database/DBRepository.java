@@ -37,4 +37,5 @@ public abstract class DBRepository {
     public abstract List<String> getAnalysis();
     public abstract void saveDataset(Dataset dataset);
     public abstract void loadData(Dataset dataset);
+    public abstract boolean existDataset(String newName);
 }

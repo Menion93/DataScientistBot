@@ -10,11 +10,12 @@ import java.util.*;
  */
 public class ColumnWranglerModule extends Module {
 
-    private enum STEPS {INSTRUCTION, DATASET_SELECCTION, COLUMN_SELECTION, TRANSFORMATION_SELECTION};
+    private enum STEPS {INSTRUCTION, DATASET_SELECCTION, COLUMN_SELECTION, TRANSFORMATION_SELECTION, DATASET_CONSTRUCTION};
     private int stepIndex;
     private Map<String, Map<String,Map<String,Double>>> ds2transf2params;
     private Preprocesser preprocesser;
     private Dataset currentDataset;
+    private Dataset newDataset;
     private String column;
 
 
@@ -52,7 +53,7 @@ public class ColumnWranglerModule extends Module {
                 column = userInput;
                 if(currentDataset.hasColumn(column)){
                     stepIndex++;
-                    return Arrays.asList("Now please select a trasnformation to apply", preprocesser.toString());
+                    return Arrays.asList("Now please select a transformation to apply", preprocesser.toString());
                 }
                 else
                     return Arrays.asList("I could not found the attribute, please try again");
@@ -60,17 +61,36 @@ public class ColumnWranglerModule extends Module {
             case TRANSFORMATION_SELECTION: {
                 String transformation = userInput;
                 if(preprocesser.hasTransformation(transformation)){
-                    preprocesser.applyTransformationAndSave(currentDataset, transformation, column);
+                    newDataset = new Dataset(handler.getRepository());
+                    newDataset.setRoot(currentDataset.getRoot());
+                    newDataset.setFrom(currentDataset.getDatasetName());
+                    newDataset.copyData(currentDataset);
+                    preprocesser.applyTransformationAndSave(newDataset, transformation, column);
                     stepIndex = 0;
-                    return Arrays.asList("Transformation done");
+                    return Arrays.asList("Transformation done, please select a name for the new dataset");
                 }
                 return Arrays.asList("I could not recognize the transformation, try again");
+            }
+
+            case DATASET_CONSTRUCTION: {
+                String newName = userInput;
+                if(isAValidDataset(newName)){
+                    newDataset.setDatasetName(newName);
+                    handler.getSession().getDatasetPool().add(newDataset);
+                    stepIndex = 0;
+                    return Arrays.asList("Dataset added in the pool");
+                }
+                return Arrays.asList("Name is not valid, please try again");
             }
 
             default:
                 return Arrays.asList("Can you repeat please?");
         }
 
+    }
+
+    private boolean isAValidDataset(String newName) {
+        return !handler.getRepository().existDataset(newName);
     }
 
     @Override
