@@ -158,6 +158,11 @@ public class Dataset {
         this.schema = ds.getSchema();
     }
 
+    public boolean loadFromFS(String path) {
+        DatasetLoader dsLoader = new DatasetLoader();
+        return dsLoader.loadFromFS(path, this);
+    }
+
     public String getDatasetName() {
         return datasetName;
     }
@@ -188,6 +193,5 @@ public class Dataset {
     public void setFrom(String from) {
         this.from = from;
     }
-
 
 }

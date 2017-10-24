@@ -316,7 +316,6 @@ public class MongoRepository extends DBRepository {
                 .find(new Document("name", newName))
                 .iterator()
                 .hasNext();
-
     }
 
 }

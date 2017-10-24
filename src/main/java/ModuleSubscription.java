@@ -2,6 +2,7 @@ package main.java;
 
 import main.java.core.DataScienceModuleHandler;
 import main.java.modules.JGTModule.JGTModule;
+import main.java.modules.LoadDataset.LoadDatasetModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
 import main.java.modules.preprocessing.ColumnWranglerModule;
@@ -33,6 +34,7 @@ public class ModuleSubscription {
         List<Module> datasetResearchModules = subscriptions.get(PIPELINE_STEPS.DATASET_SEARCH);
         datasetResearchModules.add(new SchemaAutocompleteModule(handler));
         datasetResearchModules.add(new JGTModule(handler));
+        datasetResearchModules.add(new LoadDatasetModule(handler));
 
         List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
         dataIntegrationModules.add(new ColumnWranglerModule(handler));
