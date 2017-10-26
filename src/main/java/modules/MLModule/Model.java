@@ -11,13 +11,12 @@ import java.util.Set;
  */
 public abstract class Model {
 
-    public Map<String, Evaluation> evaluationMap;
+    protected Map<String, Evaluation> evaluationMap;
 
     public Set<String> getEvaluationList(){
         return evaluationMap.keySet();
     }
 
-    public abstract void fit(Dataset dataset);
-    public abstract List<Prediction> predict(Dataset dataset);
-    public abstract String printEvaluation();
+    public abstract boolean hasEvaluation(String evaluation);
+    public abstract Evaluation evaluateModel(String evaluation, Dataset currentDataset, String currentTarget);
 }

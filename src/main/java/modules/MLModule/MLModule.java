@@ -1,8 +1,10 @@
 package main.java.modules.MLModule;
 
 import main.java.core.DataScienceModuleHandler;
+import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
 import main.java.modules.Module;
+import scala.Tuple2;
 
 import java.util.*;
 
@@ -11,16 +13,16 @@ import java.util.*;
  */
 public class MLModule extends Module {
 
-    private enum STEPS {INSTRUCTION, DATASET_SELECTION, TARGET_SELECTION, MODEL_SELECTION, RUN_MORE};
+    private enum STEPS {INSTRUCTION, DATASET_SELECTION, TARGET_SELECTION, MODEL_SELECTION, EVALUATION_SELECTION, RUN_MORE};
     private int stepIndex;
-    private Map<String, Model> ds2model;
+    private Map<String, Evaluation> ds2model;
     private Dataset currentDataset;
     private String currentTarget;
-    private Model currentModule;
+    private Model currentModel;
     private MachineAlgorithms models = new MachineAlgorithms();
 
     public MLModule(DataScienceModuleHandler handler) {
-        super(handler, "ColumnWrangler");
+        super(handler, "MLAlgorithms");
         ds2model = new HashMap<>();
         models = new MachineAlgorithms();
     }
@@ -47,6 +49,7 @@ public class MLModule extends Module {
                 String currentDatasetName = extractAndValidateDatasetName(userInput);
 
                 if(currentDatasetName != null){
+                    stepIndex++;
                     return Arrays.asList("Now specify the target class");
                 }
                 return Arrays.asList("I could not found the dataset, can you rewrite it?");
@@ -63,16 +66,25 @@ public class MLModule extends Module {
             }
             case MODEL_SELECTION: {
                 String modelSelected = userInput;
-                if(models.validateModel(userInput)){
-                    currentModule = models.fitAndEvaluate(modelSelected);
-                    ds2model.put(currentDataset.getDatasetName(), currentModule);
+                if(models.modelExist(modelSelected)){
+                    currentModel = models.getModel(modelSelected);
                     stepIndex++;
-                    return Arrays.asList(currentModule.printEvaluation(),
-                            "You want to train another model?");
+                    return Arrays.asList("Now please select an evaluation method",
+                            printEvaluationOptions(currentModel.getEvaluationList()));
                 }
                 return Arrays.asList("Model selected not found");
             }
-
+            case EVALUATION_SELECTION: {
+                String evaluation = userInput;
+                if(currentModel.hasEvaluation(evaluation)){
+                    stepIndex++;
+                    Evaluation eval = currentModel.evaluateModel(evaluation, currentDataset, currentTarget);
+                    ds2model.put(currentDataset.getDatasetName(), eval);
+                    return Arrays.asList(eval.printEvaluation());
+                }
+                return Arrays.asList("Evaluation with name" + evaluation + " is not valid",
+                        "Please select another name");
+            }
             case RUN_MORE: {
                 if(userInput.contains("yes")){
                     stepIndex -=2;
@@ -85,6 +97,10 @@ public class MLModule extends Module {
             default:
                 return Arrays.asList("Can you repeat please?");
         }
+    }
+
+    private String printEvaluationOptions(Set<String> evaluationList) {
+        return null;
     }
 
     private String extractAndValidateTarget(String userInput) {
@@ -118,17 +134,21 @@ public class MLModule extends Module {
 
     @Override
     public void loadModuleInstance() {
-
+        DBRepository repo = handler.getRepository();
+        ds2model = repo.getMLModuleAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
-
+        if(!ds2model.isEmpty()){
+            DBRepository repo = handler.getRepository();
+            repo.saveMLModuleAnalysis(ds2model);
+        }
     }
 
     @Override
     public void resetModuleInstance() {
-
+        this.stepIndex = 0;
     }
 
     @Override

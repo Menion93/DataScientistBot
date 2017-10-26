@@ -2,11 +2,10 @@ package main.java;
 
 import main.java.core.DataScienceModuleHandler;
 import main.java.modules.JGTModule.JGTModule;
-import main.java.modules.LoadDataset.LoadDatasetFSModule;
+import main.java.modules.MLModule.MLModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
 import main.java.modules.preprocessing.ColumnWranglerModule;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,7 +18,7 @@ public class ModuleSubscription {
 
     private DataScienceModuleHandler handler;
 
-    public enum PIPELINE_STEPS  {DATASET_SEARCH, DATA_INTEGRATION, FEATURE_ENGINEERING, MODEL_SELECTION, EVALUATION};
+    public enum PIPELINE_STEPS  {DATASET_SEARCH, DATA_INTEGRATION, FEATURE_ENGINEERING, MODEL_SELECTION, TRAINING_EVAL};
 
     HashMap<PIPELINE_STEPS, List<Module>> subscriptions;
 
@@ -42,7 +41,8 @@ public class ModuleSubscription {
         //featureEngineeringModules.add(new LFEModule(handler));
 
         List<Module> modelSelectionModules = subscriptions.get(PIPELINE_STEPS.MODEL_SELECTION);
-        List<Module> evaluationModules = subscriptions.get(PIPELINE_STEPS.EVALUATION);
+        List<Module> trainingEvalModules = subscriptions.get(PIPELINE_STEPS.TRAINING_EVAL);
+        trainingEvalModules.add(new MLModule(handler));
 
     }
 
