@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import main.java.dataset.Dataset;
+import main.java.modules.MLModule.Evaluation;
 import main.java.session.MessageEntry;
 import org.bson.Document;
 import java.util.*;
@@ -341,6 +342,26 @@ public class MongoRepository extends DBRepository {
                 .find(new Document("name", newName))
                 .iterator()
                 .hasNext();
+    }
+
+    @Override
+    public void saveMLModuleAnalysis(Map<String, Evaluation> ds2model) {
+
+    }
+
+    @Override
+    public Map<String, Evaluation> getMLModuleAnalysis() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Map<String, List<String>>> getColumnWranglerAnalysis() {
+        return null;
+    }
+
+    @Override
+    public void saveColumnWranglerAnalysis(Map<String, Map<String, List<String>>> ds2transf) {
+
     }
 
 }

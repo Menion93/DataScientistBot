@@ -1,6 +1,7 @@
 package main.java.database;
 
 import main.java.dataset.Dataset;
+import main.java.modules.MLModule.Evaluation;
 import main.java.session.MessageEntry;
 import main.java.session.Session;
 
@@ -38,4 +39,9 @@ public abstract class DBRepository {
     public abstract void saveDataset(Dataset dataset);
     public abstract void loadData(Dataset dataset);
     public abstract boolean existDataset(String newName);
+    public abstract void saveMLModuleAnalysis(Map<String, Evaluation> ds2model);
+    public abstract Map<String,Evaluation> getMLModuleAnalysis();
+    public abstract Map<String,Map<String,List<String>>> getColumnWranglerAnalysis();
+    public abstract void saveColumnWranglerAnalysis(Map<String, Map<String, List<String>>> ds2transf);
+
 }
