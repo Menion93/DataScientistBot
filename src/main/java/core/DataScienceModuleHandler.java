@@ -42,9 +42,9 @@ public class DataScienceModuleHandler {
 
         // If we need to talk to an handler, talk to it first
         if(currentIntent != null){
-            String reply = currentIntent.reply(userInput);
-            session.logMessage(reply, false);
-            replies.add(reply);
+            List<String> botReplies = currentIntent.reply(userInput);
+            session.logMessages(botReplies, false);
+            replies.addAll(botReplies);
 
             // If we finished talking with the handler, continue with the previous module
             if(currentIntent.finishedTalking())
@@ -55,11 +55,11 @@ public class DataScienceModuleHandler {
         // If there is a special command, handle it
         else{
 
-            String specialReply = specialInputDetected(userInput);
+            List<String> specialReplies = specialInputDetected(userInput);
 
-            if(specialReply != null){
-                replies.add(specialReply);
-                session.logMessage(specialReply, false);
+            if(specialReplies != null){
+                replies.addAll(specialReplies);
+                session.logMessages(specialReplies, false);
                 return replies;
             }
         }
@@ -68,11 +68,11 @@ public class DataScienceModuleHandler {
         List<String> moduleReplies = currentModule.reply(userInput);
         replies.addAll(moduleReplies);
 
-        session.logMessage(replies, false);
+        session.logMessages(replies, false);
         return replies;
     }
 
-    public String specialInputDetected(String userInput){
+    public List<String> specialInputDetected(String userInput){
         CommandHandler translator = new CommandHandler(this);
         return translator.matchUserInputToCommand(userInput);
     }

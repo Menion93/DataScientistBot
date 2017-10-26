@@ -40,6 +40,7 @@ public class DatasetLoader {
                 }
                 
             }
+            dataset.setSchema(schema);
 
         }catch(Exception e){
             e.printStackTrace();

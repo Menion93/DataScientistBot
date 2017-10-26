@@ -3,6 +3,9 @@ package main.java.commands.list;
 import main.java.core.DataScienceModuleHandler;
 import main.java.commands.Command;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * Created by Andrea on 09/10/2017.
@@ -18,23 +21,24 @@ public class LoadBranchCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
 
         if(branchName == null)
-            return "You must give me the name of the branch you want to load";
+            return Arrays.asList("You must give me the name of the branch you want to load");
 
         if(handler.getRepository().isAValidBranch(branchName)){
             handler.saveCurrentInstance();
             handler.loadBranch(branchName);
-            return "Branch loaded";
+            return Arrays.asList("Branch loaded");
         }
 
-        return "The selected branch is not valid";
+        return Arrays.asList("The selected branch is not valid");
     }
 
 
     @Override
     public boolean commandIsRequested(String userInput){
+        branchName = null;
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);
 
         // If we did not detect our keywords, discard this intent.

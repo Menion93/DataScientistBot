@@ -3,6 +3,7 @@ package main.java.commands.list;
 import main.java.commands.Command;
 import main.java.core.DataScienceModuleHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class ShowBranchesCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
         StringBuilder sb = new StringBuilder();
         List<String> branches = handler.getRepository().getBranches();
 
@@ -32,6 +33,6 @@ public class ShowBranchesCommand extends Command {
             sb.append("\n");
         }
 
-        return sb.toString();
+        return Arrays.asList(sb.toString());
     }
 }

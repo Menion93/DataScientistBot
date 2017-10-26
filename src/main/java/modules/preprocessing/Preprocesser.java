@@ -119,7 +119,7 @@ public class Preprocesser {
         StringBuilder sb = new StringBuilder();
         sb.append("List of possible operations:\n");
         sb.append("Column operation:\n");
-        sb.append("\tsqrt/\n/\tfreq\n/\tlog\n/\ttanh\n/\tnormalize\n/\tsigmoid\n/\tsquare\n");
+        sb.append("\tsqrt/\n\tfreq\n\tlog\n\ttanh\n\tnormalize\n\tsigmoid\n\tsquare\n");
         sb.append("\tfillna\n\tdrop-column\n");
         return sb.toString();
     }

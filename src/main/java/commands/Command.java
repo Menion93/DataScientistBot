@@ -69,9 +69,9 @@ public abstract class Command {
     }
 
 
-    public String reply(String userInput){
+    public List<String> reply(String userInput){
         return null;
     }
 
-    public abstract String handleCommand();
+    public abstract List<String> handleCommand();
 }

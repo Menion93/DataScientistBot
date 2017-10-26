@@ -4,6 +4,9 @@ import main.java.core.DataScienceModuleHandler;
 import main.java.commands.Command;
 import main.java.utils.Helper;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * Created by Andrea on 09/10/2017.
@@ -18,9 +21,9 @@ public class ExitBotCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
         handler.isSayingGoodbye(true);
-        return Helper.selectRandomString(EXIT_SENTENCES);
+        return Arrays.asList(Helper.selectRandomString(EXIT_SENTENCES));
     }
 
     @Override

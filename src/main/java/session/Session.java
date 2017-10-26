@@ -40,7 +40,7 @@ public class Session {
         conversation.add(new MessageEntry(message, isTheUser));
     }
 
-    public void logMessage(List<String> messages, boolean isTheUser){
+    public void logMessages(List<String> messages, boolean isTheUser){
         for(String message : messages)
             logMessage(message, isTheUser);
     }

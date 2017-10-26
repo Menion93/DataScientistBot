@@ -64,9 +64,9 @@ public class ColumnWranglerModule extends Module {
                     newDataset = new Dataset(handler.getRepository());
                     newDataset.setRoot(currentDataset.getRoot());
                     newDataset.setFrom(currentDataset.getDatasetName());
-                    newDataset.copyData(currentDataset);
-                    preprocesser.applyTransformationAndSave(newDataset, transformation, column);
-                    stepIndex = 0;
+                    newDataset.copyDatasetData(currentDataset);
+                    preprocesser.applyTransformationAndSave(newDataset, column, transformation);
+                    stepIndex++;
                     return Arrays.asList("Transformation done, please select a name for the new dataset");
                 }
                 return Arrays.asList("I could not recognize the transformation, try again");

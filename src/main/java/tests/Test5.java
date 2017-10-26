@@ -2,6 +2,8 @@ package main.java.tests;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import main.java.database.DBRepository;
+import main.java.database.MongoRepository;
 import main.java.dataset.Dataset;
 import main.java.database.MongoConnection;
 import org.bson.Document;
@@ -17,6 +19,7 @@ public class Test5 {
     public static void main(String[] args){
 
         MongoConnection connection = new MongoConnection();
+        DBRepository repo = new MongoRepository();
         MongoDatabase db = connection.getDb();
 
         String sessionName = "try";
@@ -24,8 +27,8 @@ public class Test5 {
 
         List<String> datasetNames = new LinkedList<>();
         List<Dataset> dlist = new LinkedList<>();
-        dlist.add(new Dataset("lol","root", "from", false));
-        dlist.add(new Dataset("ciao", "root", "from", false));
+        dlist.add(new Dataset("lol","root", "from", false, repo));
+        dlist.add(new Dataset("ciao", "root", "from", false, repo));
 
         for(Dataset ds : dlist)
             datasetNames.add(ds.getDatasetName());
@@ -43,6 +46,6 @@ public class Test5 {
         List<Dataset> datasetList = new LinkedList<>();
 
         for(String name : retrieved)
-            datasetList.add(new Dataset(name, "root", "from", false));
+            datasetList.add(new Dataset(name, "root", "from", false, repo));
     }
 }

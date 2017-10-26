@@ -33,9 +33,13 @@ public class CommandHandler {
         handlerList.add(new PrintCurrentSessionCommand(handler));
         handlerList.add(new ShowBranchesCommand(handler));
         handlerList.add(new ShowAnalysisCommand(handler));
+        handlerList.add(new ShowDataset(handler));
+        handlerList.add(new ShowDsPoolCommand(handler));
+        handlerList.add(new ImportNewDatasetCommand(handler));
+        handlerList.add(new LoadDatasetCommand(handler));
     }
 
-    public String matchUserInputToCommand(String userInput){
+    public List<String> matchUserInputToCommand(String userInput){
 
         for(Command handler : handlerList){
             if(handler.commandIsRequested(userInput)){

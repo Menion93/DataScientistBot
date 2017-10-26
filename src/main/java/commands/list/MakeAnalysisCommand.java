@@ -5,6 +5,9 @@ import edu.stanford.nlp.util.CoreMap;
 import main.java.core.DataScienceModuleHandler;
 import main.java.commands.Command;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Andrea on 16/10/2017.
  */
@@ -23,7 +26,7 @@ public class MakeAnalysisCommand extends Command {
     }
 
     @Override
-    public String reply(String userInput){
+    public List<String> reply(String userInput){
         parseUserInput(userInput);
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -36,11 +39,11 @@ public class MakeAnalysisCommand extends Command {
                 if(analysisName != null){
                     if(handler.createNewBranch(analysisName)){
                         stepIndex++;
-                        return "Analysis with name " + analysisName + " created. Would you like to switch now?";
+                        return Arrays.asList("Analysis with name " + analysisName + " created", "Would you like to switch now?");
                     }
-                    else return "Analysis name is not valid, try with another name";
+                    else return Arrays.asList("Analysis name is not valid, try with another name");
                 }
-                return "Please specify a name for the Analysis to create";
+                return Arrays.asList("Please specify a name for the Analysis to create");
             }
 
             case SWITCH_ANALYSIS: {
@@ -48,13 +51,13 @@ public class MakeAnalysisCommand extends Command {
 
                 if(userInput.equals("yes")){
                     handler.loadAnalysis(analysisName);
-                    return "Switched to the new branch";
+                    return Arrays.asList("Switched to the new branch");
                 }
-                return "As you whish";
+                return Arrays.asList("As you whish");
             }
 
             default:
-                return "Can you repeat?";
+                return Arrays.asList("Can you repeat?");
         }
     }
 
@@ -72,6 +75,7 @@ public class MakeAnalysisCommand extends Command {
 
     @Override
     public boolean commandIsRequested(String userInput) {
+        analysisName = null;
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);
 
         // If we did not detect our keywords, discard this intent.
@@ -87,18 +91,19 @@ public class MakeAnalysisCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
         // Create a branch of this work
 
         if(analysisName == null) {
-            return "Please specify a name for the analysis to create";
+            return Arrays.asList("Please specify a name for the analysis to create");
         }
 
         if(handler.createNewAnalysis(analysisName)){
             stepIndex++;
             handler.continueHandlerDiscussion(this);
-            return "Branch with name " + analysisName + " created. Would you like to switch now?";
+            finishedTalking = false;
+            return Arrays.asList("Branch with name " + analysisName + " created", "Would you like to switch now?");
         }
-        else return "Branch name is not valid, try with another name";
+        else return Arrays.asList("Branch name is not valid, try with another name");
     }
 }

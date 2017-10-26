@@ -141,11 +141,13 @@ public class MongoRepository extends DBRepository {
 
         while(datasets.hasNext()){
             Document ds = datasets.next();
-            datasetList.add(new Dataset(ds.getString("name"),
+            Dataset dataset = new Dataset(ds.getString("name"),
                     ds.getString("root"),
                     ds.getString("from"),
                     false,
-                    this));
+                    this);
+            dataset.isNew(false);
+            datasetList.add(dataset);
         }
 
         return datasetList;
@@ -270,11 +272,11 @@ public class MongoRepository extends DBRepository {
         MongoCollection<Document> datasetMetadataColl = db.getCollection("DatasetMetadataColl");
         Document queryDS = new Document("sessionName", sessionName)
                 .append("branchName", branchName)
-                .append("datasetName", dataset.getDatasetName());
+                .append("name", dataset.getDatasetName());
         datasetMetadataColl.deleteOne(queryDS);
         Document insertQuery = new Document("sessionName", sessionName)
                 .append("branchName", branchName)
-                .append("datasetName", dataset.getDatasetName())
+                .append("name", dataset.getDatasetName())
                 .append("root", dataset.getRoot())
                 .append("from", dataset.getFrom());
 
@@ -285,8 +287,10 @@ public class MongoRepository extends DBRepository {
             Document insertQuery2 = new Document("name", dataset.getDatasetName())
                     .append("data",
                             new Document("numerical",dataset.getNumericalAttributes())
-                                    .append("categorical", dataset.getCategoricalAttributes()));
+                                    .append("categorical", dataset.getCategoricalAttributes()))
+                    .append("schema", dataset.getSchema());
             datasetColl.insertOne(insertQuery2);
+            dataset.isNew(false);
 
         }
 
@@ -302,10 +306,31 @@ public class MongoRepository extends DBRepository {
         }
         catch(Exception ex){}
 
+        // Import the data
         if(mongoDataset != null){
             Document data = (Document) mongoDataset.get("data");
             dataset.setNumerical((Map<String, List<Double>>) data.get("numerical"));
             dataset.setCategorical((Map<String, List<String>>) data.get("categorical"));
+            dataset.setSchema((List<String>) mongoDataset.get("schema"));
+            dataset.isNew(false);
+        }
+
+        // Check for metadata
+        MongoCollection<Document> datasetMetadataColl = db.getCollection("DatasetMetadataColl");
+        Document metadata = null;
+        try{
+            Document query = new Document("name", dataset.getDatasetName());
+            metadata = datasetColl.find(query).iterator().next();
+        }
+        catch(Exception ex){}
+
+        if(metadata != null){
+            dataset.setRoot((String) metadata.get("root"));
+            dataset.setFrom((String) metadata.get("from"));
+        }
+        else{
+            dataset.setRoot(dataset.getDatasetName());
+            dataset.setFrom(null);
         }
 
     }

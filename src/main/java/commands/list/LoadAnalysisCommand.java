@@ -3,6 +3,9 @@ package main.java.commands.list;
 import main.java.core.DataScienceModuleHandler;
 import main.java.commands.Command;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Andrea on 16/10/2017.
  */
@@ -17,6 +20,7 @@ public class LoadAnalysisCommand extends Command {
 
     @Override
     public boolean commandIsRequested(String userInput) {
+        analysisName = null;
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);
 
         // If we did not detect our keywords, discard this intent.
@@ -33,16 +37,16 @@ public class LoadAnalysisCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
         if(analysisName == null)
-            return "You must give me the name of the branch you want to load";
+            return Arrays.asList("You must give me the name of the branch you want to load");
 
         if(handler.getRepository().isAValidAnalysis(analysisName)){
             handler.saveCurrentInstance();
             handler.loadAnalysis(analysisName);
-            return "Analysis loaded";
+            return Arrays.asList("Analysis loaded");
         }
 
-        return "The selected analysis is not valid";
+        return Arrays.asList("The selected analysis is not valid");
     }
 }

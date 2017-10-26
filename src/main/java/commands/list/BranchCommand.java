@@ -3,6 +3,9 @@ package main.java.commands.list;
 import main.java.core.DataScienceModuleHandler;
 import main.java.commands.Command;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * Created by Andrea on 09/10/2017.
@@ -21,26 +24,28 @@ public class BranchCommand extends Command {
     }
 
     @Override
-    public String handleCommand() {
+    public List<String> handleCommand() {
         // Create a branch of this work
         stepIndex = 0;
 
         if(branchName == null) {
             handler.continueHandlerDiscussion(this);
-            return "Please specify a name for the branch to create";
+            finishedTalking = false;
+            return Arrays.asList("Please specify a name for the branch to create");
         }
 
         if(handler.createNewBranch(branchName)){
             stepIndex++;
             handler.continueHandlerDiscussion(this);
-            return "Branch with name " + branchName + " created. Would you like to switch now?";
+            finishedTalking = false;
+            return Arrays.asList("Branch with name " + branchName + " created","Would you like to switch now?");
         }
-        else return "Branch name is not valid, try with another name";
+        else return Arrays.asList("Branch name is not valid, try with another name");
 
     }
 
     @Override
-    public String reply(String userInput){
+    public List<String> reply(String userInput){
         parseUserInput(userInput);
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -53,11 +58,12 @@ public class BranchCommand extends Command {
                 if(branchName != null){
                     if(handler.createNewBranch(branchName)){
                         stepIndex++;
-                        return "Branch with name " + branchName + " created. Would you like to switch now?";
+                        return Arrays.asList("Branch with name " + branchName + " created",
+                                "Would you like to switch now?");
                     }
-                    else return "Branch name is not valid, try with another name";
+                    else return Arrays.asList("Branch name is not valid, try with another name");
                 }
-                return "Please specify a name for the branch to create";
+                return Arrays.asList("Please specify a name for the branch to create");
             }
 
             case SWITCH_BRANCH: {
@@ -66,13 +72,13 @@ public class BranchCommand extends Command {
                 if(userInput.equals("yes")){
                     handler.saveCurrentInstance();
                     handler.loadBranch(branchName);
-                    return "Switched to the new branch";
+                    return Arrays.asList("Switched to the new branch");
                 }
-                return "As you whish";
+                return Arrays.asList("As you whish");
             }
 
             default:
-                return "Can you repeat?";
+                return Arrays.asList("Can you repeat?");
         }
     }
 
@@ -88,6 +94,7 @@ public class BranchCommand extends Command {
 
     @Override
     public boolean commandIsRequested(String userInput) {
+        branchName = null;
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);
 
         // If we did not detect our keywords, discard this intent.

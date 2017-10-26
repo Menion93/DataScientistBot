@@ -27,11 +27,15 @@ public class Dataset {
         this.from = from;
         this.newDataset = isnew;
         this.repository = repo;
+        categorical = new HashMap<>();
+        numerical = new HashMap<>();
     }
 
     public Dataset(DBRepository repo){
         this.repository = repo;
         newDataset = true;
+        categorical = new HashMap<>();
+        numerical = new HashMap<>();
     }
 
 
@@ -77,7 +81,7 @@ public class Dataset {
         if(categorical == null)
             repository.loadData(this);
         List<String> values = categorical.get(attr);
-        List<String> copy = null;
+        List<String> copy = new LinkedList<>();
         for(String sCopy : values)
             copy.add(sCopy);
 
@@ -88,7 +92,7 @@ public class Dataset {
         if(numerical == null)
             repository.loadData(this);
         List<Double> values = numerical.get(attr);
-        List<Double> copy = null;
+        List<Double> copy = new LinkedList<>();
         for(Double sCopy : values)
             copy.add(sCopy);
 
@@ -148,14 +152,19 @@ public class Dataset {
         return categorical.containsKey(column) || numerical.containsKey(column);
     }
 
-    public void copyData(Dataset ds) {
+    public void copyDatasetData(Dataset ds) {
+        categorical = new HashMap<>();
         for(String key : ds.getCategoricalAttributes().keySet())
             this.categorical.put(key, ds.getCategoricalAttribute(key));
-
+        numerical = new HashMap<>();
         for(String key : ds.getNumericalAttributes().keySet())
             this.numerical.put(key, ds.getNumericalAttribute(key));
 
-        this.schema = ds.getSchema();
+        this.schema = new LinkedList<>();
+
+        for(String attr : ds.getSchema()){
+            this.schema.add(attr);
+        }
     }
 
     public boolean loadFromFS(String path) {
@@ -181,6 +190,7 @@ public class Dataset {
     public boolean isNew() {
         return newDataset;
     }
+    public void isNew(boolean isNew){ this.newDataset = isNew; }
     public void setCategorical(Map<String, List<String>> categorical) {
         this.categorical = categorical;
     }
@@ -193,5 +203,7 @@ public class Dataset {
     public void setFrom(String from) {
         this.from = from;
     }
-
+    public void setSchema(List<String> schema) {
+        this.schema = schema;
+    }
 }
