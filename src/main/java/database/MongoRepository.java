@@ -188,7 +188,7 @@ public class MongoRepository extends DBRepository {
 
         if(result == null){
             System.out.println("SACData not found");
-            return new HashMap<String,Map<String, Double>>();
+            return new HashMap<>();
         }
 
         return (Map<String,Map<String, Double>>) result.get("map");
@@ -289,7 +289,8 @@ public class MongoRepository extends DBRepository {
                     .append("data",
                             new Document("numerical",dataset.getNumericalAttributes())
                                     .append("categorical", dataset.getCategoricalAttributes()))
-                    .append("schema", dataset.getSchema());
+                    .append("schema", dataset.getSchema())
+                    .append("types", dataset.getTypes());
             datasetColl.insertOne(insertQuery2);
             dataset.isNew(false);
 
@@ -313,6 +314,7 @@ public class MongoRepository extends DBRepository {
             dataset.setNumerical((Map<String, List<Double>>) data.get("numerical"));
             dataset.setCategorical((Map<String, List<String>>) data.get("categorical"));
             dataset.setSchema((List<String>) mongoDataset.get("schema"));
+            dataset.setTypes((List<String>) mongoDataset.get("types"));
             dataset.isNew(false);
         }
 
@@ -345,23 +347,73 @@ public class MongoRepository extends DBRepository {
     }
 
     @Override
-    public void saveMLModuleAnalysis(Map<String, Evaluation> ds2model) {
+    public void saveMLModuleAnalysis(List<Evaluation> evaluations) {
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
 
+        MongoCollection<Document> MLcoll = db.getCollection("MLModuleColl");
+        MLcoll.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
+        for(Evaluation eval : evaluations)
+            MLcoll.insertOne(new Document("sessionName", sessionName)
+                    .append("branchName",branchName)
+                    .append("datasetName", eval.getDatasetName())
+                    .append("modelName", eval.getModelName())
+                    .append("evaluationName", eval.getEvaluationName())
+                    .append("evaluationScore", eval.getEvaluationScore()));
     }
 
     @Override
-    public Map<String, Evaluation> getMLModuleAnalysis() {
-        return null;
+    public List<Evaluation> getMLModuleAnalysis() {
+
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
+        Document document = new Document("sessionName", sessionName).append("branchName", branchName);
+        MongoCollection<Document> MLcoll = db.getCollection("MLModuleColl");
+        MongoCursor<Document> result = MLcoll.find(document).iterator();
+        List<Evaluation> evaluations = new LinkedList<>();
+
+        while(result.hasNext()){
+            Document doc = result.next();
+            Evaluation eval = new Evaluation();
+            eval.setDatasetName(doc.getString("datasetName"));
+            eval.setEvaluationName(doc.getString("evaluationName"));
+            eval.setEvaluationScore(doc.getDouble("evaluationScore"));
+            eval.setModelName(doc.getString("modelName"));
+
+            evaluations.add(eval);
+        }
+
+        return evaluations;
     }
 
     @Override
     public Map<String, Map<String, List<String>>> getColumnWranglerAnalysis() {
-        return null;
+
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
+        Document document = new Document("sessionName", sessionName).append("branchName", branchName);
+        MongoCollection<Document> JGTcoll = db.getCollection("SchemaAutocompleteModuleColl");
+        Document result = JGTcoll.find(document).iterator().tryNext();
+
+        if(result == null){
+            System.out.println("SACData not found");
+            return new HashMap<>();
+        }
+
+        return (Map<String, Map<String, List<String>>>) result.get("map");
     }
 
     @Override
     public void saveColumnWranglerAnalysis(Map<String, Map<String, List<String>>> ds2transf) {
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
 
+        MongoCollection<Document> CWcoll = db.getCollection("ColumnWranglerModuleColl");
+        CWcoll.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
+        CWcoll.insertOne(new Document("sessionName", sessionName)
+                .append("branchName",branchName)
+                .append("map", ds2transf)
+        );
     }
 
 }

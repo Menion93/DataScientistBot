@@ -4,8 +4,6 @@ import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
 import main.java.modules.Module;
-import scala.Tuple2;
-
 import java.util.*;
 
 /**
@@ -15,7 +13,7 @@ public class MLModule extends Module {
 
     private enum STEPS {INSTRUCTION, DATASET_SELECTION, TARGET_SELECTION, MODEL_SELECTION, EVALUATION_SELECTION, RUN_MORE};
     private int stepIndex;
-    private Map<String, Evaluation> ds2model;
+    private List<Evaluation> ds2model;
     private Dataset currentDataset;
     private String currentTarget;
     private Model currentModel;
@@ -23,7 +21,7 @@ public class MLModule extends Module {
 
     public MLModule(DataScienceModuleHandler handler) {
         super(handler, "MLAlgorithms");
-        ds2model = new HashMap<>();
+        ds2model = new LinkedList<>();
         models = new MachineAlgorithms();
     }
 
@@ -79,7 +77,7 @@ public class MLModule extends Module {
                 if(currentModel.hasEvaluation(evaluation)){
                     stepIndex++;
                     Evaluation eval = currentModel.evaluateModel(evaluation, currentDataset, currentTarget);
-                    ds2model.put(currentDataset.getDatasetName(), eval);
+                    ds2model.add(eval);
                     return Arrays.asList(eval.printEvaluation());
                 }
                 return Arrays.asList("Evaluation with name" + evaluation + " is not valid",
@@ -99,8 +97,15 @@ public class MLModule extends Module {
         }
     }
 
-    private String printEvaluationOptions(Set<String> evaluationList) {
-        return null;
+    private String printEvaluationOptions(List<String> evaluationList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Evaluations:");
+
+        for(String clf : evaluationList){
+            sb.append("\n\t");
+            sb.append(clf);
+        }
+        return sb.toString();
     }
 
     private String extractAndValidateTarget(String userInput) {

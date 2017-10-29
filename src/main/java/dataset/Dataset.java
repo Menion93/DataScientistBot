@@ -16,6 +16,7 @@ public class Dataset {
     private String from; // This is name of the dataset that generated this one
     private boolean newDataset; // This checks if its a new dataset or not
     private List<String> schema;
+    private List<String> types;
     private Map<String,List<String>> categorical;
     private Map<String,List<Double>> numerical;
 
@@ -112,6 +113,14 @@ public class Dataset {
         return schema;
     }
 
+    public List<String> getTypes() {
+        if(types == null)
+            repository.loadData(this);
+
+        return types;
+    }
+
+
     @Override
     public String toString(){
         return "Name of the dataset:\t" + this.getDatasetName() + "\n" +
@@ -123,6 +132,7 @@ public class Dataset {
             repository.loadData(this);
         this.numerical.put(attr, Arrays.stream(column).mapToObj(d -> d).collect(Collectors.toList()));
         this.schema.add(attr);
+        this.types.add("numerical");
     }
 
     public void addCategoticalAttribute(String attr, String[] column) {
@@ -130,6 +140,7 @@ public class Dataset {
             repository.loadData(this);
         this.categorical.put(attr, Arrays.asList(column));
         this.schema.add(attr);
+        this.schema.add("categorical");
     }
 
     public void addNumericalAttribute(String attr, List<Double> column) {
@@ -137,6 +148,7 @@ public class Dataset {
             repository.loadData(this);
         this.numerical.put(attr, column);
         this.schema.add(attr);
+        this.schema.add("numerical");
     }
 
     public void addCategoticalAttribute(String attr, List<String> column) {
@@ -144,6 +156,7 @@ public class Dataset {
             repository.loadData(this);
         this.categorical.put(attr, column);
         this.schema.add(attr);
+        this.schema.add("categorical");
     }
 
     public boolean hasColumn(String column) {
@@ -164,6 +177,12 @@ public class Dataset {
 
         for(String attr : ds.getSchema()){
             this.schema.add(attr);
+        }
+
+        this.types = new LinkedList<>();
+
+        for(String attrType : ds.getTypes()){
+            this.types.add(attrType);
         }
     }
 
@@ -205,5 +224,8 @@ public class Dataset {
     }
     public void setSchema(List<String> schema) {
         this.schema = schema;
+    }
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 }

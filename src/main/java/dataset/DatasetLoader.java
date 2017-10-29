@@ -41,6 +41,7 @@ public class DatasetLoader {
                 
             }
             dataset.setSchema(schema);
+            dataset.setTypes(types);
 
         }catch(Exception e){
             e.printStackTrace();

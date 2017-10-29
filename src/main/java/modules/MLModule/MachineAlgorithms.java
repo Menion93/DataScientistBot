@@ -1,7 +1,10 @@
 package main.java.modules.MLModule;
 
+import main.java.modules.MLModule.models.RandomForestClassifier;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Andrea on 22/10/2017.
@@ -13,6 +16,9 @@ public class MachineAlgorithms {
     public MachineAlgorithms(){
         // Create and add the models
         models = new HashMap<>();
+        Model randomForest = new RandomForestClassifier();
+        randomForest.addEvaluation("weka_eval_crossVal");
+        models.put("RandomForest", randomForest);
     }
 
     public Model getModel(String modelName){
@@ -25,6 +31,15 @@ public class MachineAlgorithms {
 
     @Override
     public String toString(){
-        return null;
+        StringBuilder sb = new StringBuilder();
+        Set<String> clfNames = models.keySet();
+
+        sb.append("Classifier:");
+
+        for(String clf : clfNames){
+            sb.append("\n\t");
+            sb.append(clf);
+        }
+        return sb.toString();
     }
 }
