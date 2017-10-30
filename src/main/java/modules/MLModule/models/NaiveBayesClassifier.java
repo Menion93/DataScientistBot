@@ -4,15 +4,16 @@ import main.java.dataset.Dataset;
 import main.java.modules.MLModule.Evaluation;
 import main.java.modules.MLModule.Model;
 import main.java.utils.Helper;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
+
 import java.util.Random;
 
-
 /**
- * Created by Andrea on 29/10/2017.
+ * Created by Andrea on 30/10/2017.
  */
-public class RandomForestClassifier extends Model {
+public class NaiveBayesClassifier extends Model{
 
     int seed = 667;
 
@@ -28,10 +29,7 @@ public class RandomForestClassifier extends Model {
             Helper helper = new Helper();
             Instances instances = helper.getCategoricalInstancesFromDataset(dataset, currentTarget);
 
-            RandomForest clf = new RandomForest();
-
-            //clf.buildClassifier(instances);
-            clf.setNumTrees(100);
+            NaiveBayes clf = new NaiveBayes();
 
             weka.classifiers.Evaluation eTest = new weka.classifiers.Evaluation(instances);
             eTest.crossValidateModel(clf, instances, 5, new Random(seed), new Object[] { });
@@ -49,4 +47,5 @@ public class RandomForestClassifier extends Model {
 
         return eval;
     }
+
 }

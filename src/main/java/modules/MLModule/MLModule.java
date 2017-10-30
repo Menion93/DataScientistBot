@@ -78,7 +78,7 @@ public class MLModule extends Module {
                     stepIndex++;
                     Evaluation eval = currentModel.evaluateModel(evaluation, currentDataset, currentTarget);
                     ds2model.add(eval);
-                    return Arrays.asList(eval.printEvaluation());
+                    return Arrays.asList(eval.printEvaluation(), "Do you want to run another model?");
                 }
                 return Arrays.asList("Evaluation with name" + evaluation + " is not valid",
                         "Please select another name");

@@ -14,6 +14,7 @@ import java.util.Set;
 public abstract class Model {
 
     protected List<String> evaluationsList;
+    private String modelName;
 
     public Model(){
         evaluationsList = new LinkedList<>();
@@ -21,6 +22,14 @@ public abstract class Model {
 
     public List<String> getEvaluationList(){
         return evaluationsList;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     public boolean hasEvaluation(String evaluation){

@@ -1,5 +1,7 @@
 package main.java.modules.MLModule;
 
+import main.java.modules.MLModule.models.LinearRegressionClassifier;
+import main.java.modules.MLModule.models.NaiveBayesClassifier;
 import main.java.modules.MLModule.models.RandomForestClassifier;
 
 import java.util.HashMap;
@@ -16,9 +18,24 @@ public class MachineAlgorithms {
     public MachineAlgorithms(){
         // Create and add the models
         models = new HashMap<>();
+
+        // RandomForest
         Model randomForest = new RandomForestClassifier();
+        randomForest.setModelName("RandomForest");
         randomForest.addEvaluation("weka_eval_crossVal");
         models.put("RandomForest", randomForest);
+
+        // Linear Regression
+        Model linearRegression = new LinearRegressionClassifier();
+        linearRegression.setModelName("LinearRegression");
+        linearRegression.addEvaluation("weka_eval_crossVal");
+        models.put("LinearRegression", linearRegression);
+
+        Model naiveBayes = new NaiveBayesClassifier();
+        naiveBayes.setModelName("NaiveBayes");
+        naiveBayes.addEvaluation("weka_eval_crossVak");
+        models.put("NaiveBayes", naiveBayes);
+
     }
 
     public Model getModel(String modelName){

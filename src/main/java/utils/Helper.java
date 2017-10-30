@@ -116,9 +116,53 @@ public class Helper {
         // Now populate the dataset
         for(int i=0; i<datasetSize; i++){
             Instance instance = new Instance(attributes.size());
-            for(int j=0; j<attributes.size(); j++){
-                instance.setValue((Attribute)attributes.elementAt(j),
+
+            int k = 0;
+            for(int j=0; j<schema.size(); j++){
+                if(types.get(j).equals("categorical")){
+                    instance.setValue((Attribute)attributes.elementAt(k),
                         categoricalAttr.get(schema.get(j)).get(i));
+                    k++;
+                }
+            }
+            // add the instance
+            instances.add(instance);
+        }
+
+        return instances;
+    }
+
+    public Instances getNumericalInstancesFromDataset(Dataset dataset, String target){
+        List<String> schema = dataset.getSchema();
+        List<String> types = dataset.getTypes();
+
+        Map<String, List<Double>> numericalAttr = dataset.getNumericalAttributes();
+        int numOfFeatures = numericalAttr.size();
+
+        FastVector attributes = new FastVector(numOfFeatures);
+        int indexOfClass = schema.indexOf(target);
+
+        // Create the attributes
+        for(Map.Entry<String, List<Double>> entry : numericalAttr.entrySet())
+            attributes.addElement(new Attribute(entry.getKey()));
+
+        Instances instances = new Instances("Dataset", attributes, 10);
+        instances.setClassIndex(indexOfClass);
+
+        // Find the number of instances
+        int datasetSize = numericalAttr.values().iterator().next().size();
+
+        // Now populate the dataset
+        for(int i=0; i<datasetSize; i++){
+            Instance instance = new Instance(attributes.size());
+
+            int k = 0;
+            for(int j=0; j<schema.size(); j++){
+                if(types.get(j).equals("numerical")){
+                    instance.setValue((Attribute)attributes.elementAt(k),
+                         numericalAttr.get(schema.get(j)).get(i));
+                    k++;
+                }
             }
             // add the instance
             instances.add(instance);
