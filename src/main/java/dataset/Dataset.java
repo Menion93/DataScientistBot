@@ -191,6 +191,20 @@ public class Dataset {
         return dsLoader.loadFromFS(path, this);
     }
 
+    public void removeNumericalAttribute(String datasetColumm) {
+        int indexOfAttr = schema.indexOf(datasetColumm);
+        schema.remove(indexOfAttr);
+        types.remove(indexOfAttr);
+        numerical.remove(datasetColumm);
+    }
+
+    public void removeCategoricalAttribute(String datasetColumm) {
+        int indexOfAttr = schema.indexOf(datasetColumm);
+        schema.remove(indexOfAttr);
+        types.remove(indexOfAttr);
+        categorical.remove(datasetColumm);
+    }
+
     public String getDatasetName() {
         return datasetName;
     }
@@ -228,4 +242,6 @@ public class Dataset {
     public void setTypes(List<String> types) {
         this.types = types;
     }
+
+
 }

@@ -29,9 +29,9 @@ public class Preprocesser {
 
     public boolean deleteColumn(Dataset ds, String datasetColumm){
         if(ds.getNumericalAttributes().containsKey(datasetColumm))
-            ds.getNumericalAttributes().remove(datasetColumm);
+            ds.removeNumericalAttribute(datasetColumm);
         else if(ds.getCategoricalAttributes().containsKey(datasetColumm))
-            ds.getCategoricalAttributes().remove(datasetColumm);
+            ds.removeCategoricalAttribute(datasetColumm);
         else
             return false;
         return true;
@@ -80,7 +80,7 @@ public class Preprocesser {
         if(transformation.equals("fillna"))
             return fillNa(ds, attribute);
 
-        if(transformation.equals("drop-column"))
+        if(transformation.equals("delete-column"))
             return deleteColumn(ds, attribute);
 
         double[] column = transform(attribute, transformation, ds);
@@ -120,7 +120,7 @@ public class Preprocesser {
         sb.append("List of possible operations:\n");
         sb.append("Column operation:\n");
         sb.append("\tsqrt/\n\tfreq\n\tlog\n\ttanh\n\tnormalize\n\tsigmoid\n\tsquare\n");
-        sb.append("\tfillna\n\tdrop-column\n");
+        sb.append("\tfillna\n\tdelete-column\n");
         return sb.toString();
     }
 
