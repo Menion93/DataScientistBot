@@ -1,5 +1,6 @@
 package main.java.modules.LFEModule;
 
+import main.java.ModuleSubscription;
 import main.java.dataset.Dataset;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
@@ -21,8 +22,8 @@ public class LFEModule extends Module {
     private Map<Integer, String> anResult;
     private LFEMapper lfetool;
 
-    public LFEModule(DataScienceModuleHandler handler) {
-        super(handler, "LFE");
+    public LFEModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "LFE", step);
         dataset2transfor = new HashMap<>();
         lfetool = new LFEMapper();
     }
@@ -71,6 +72,7 @@ public class LFEModule extends Module {
                     }
 
                     this.resetConversation();
+                    handler.switchToDefaultModule();
                     return Arrays.asList(result);
                 }
                 return Arrays.asList("The target is not valid");

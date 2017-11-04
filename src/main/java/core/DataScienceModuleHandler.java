@@ -1,11 +1,12 @@
 package main.java.core;
 
 import main.java.ModuleSubscription;
+import main.java.modules.ContextModule.ContextModule;
+import main.java.modules.ModuleSelection;
 import main.java.session.Session;
 import main.java.database.DBRepository;
 import main.java.commands.Command;
 import main.java.commands.CommandHandler;
-import main.java.modules.GreetingModule;
 import main.java.modules.Module;
 
 import java.util.LinkedList;
@@ -17,18 +18,20 @@ import java.util.List;
 public class DataScienceModuleHandler {
 
     private DBRepository repository;
-    private Module defaultModule;
     private Module currentModule;
+    private Module contextModule;
+    private ModuleSelection selectionModule;
     private ModuleSubscription subscriptions;
     private Command currentIntent;
     private Session session;
     private boolean sayingGoodbye;
-    private boolean changeModule;
+    private boolean switchedToDefault;
 
     public DataScienceModuleHandler(DBRepository repository){
-        defaultModule = new GreetingModule(this);
-        currentModule = defaultModule;
+        selectionModule = new ModuleSelection(this);
+        currentModule = selectionModule;
         subscriptions = new ModuleSubscription(this);
+        contextModule = new ContextModule(this);
         this.session = new Session(repository);
         this.repository = repository;
 
@@ -65,8 +68,15 @@ public class DataScienceModuleHandler {
         }
 
         // If no special command is given, continue with the normal workflow
-        List<String> moduleReplies = currentModule.reply(userInput);
-        replies.addAll(moduleReplies);
+        List<String> moduleReplies = new LinkedList<>();
+        replies.addAll(currentModule.reply(userInput));
+
+        // If you are exiting a module, add another message from the selection module
+        if(switchedToDefault){
+            System.out.println("im here");
+            replies.addAll(currentModule.reply(""));
+            switchedToDefault = false;
+        }
 
         session.logMessages(replies, false);
         return replies;
@@ -133,10 +143,26 @@ public class DataScienceModuleHandler {
         subscriptions.resetAllModuleInstances();
     }
 
-    public void continueHandlerDiscussion(Command intent){ this.currentIntent = intent;}
-    public void changeModule(boolean changing){
-        this.changeModule = changing;
+    public void setCurrentModule(Module currentModule) {
+        this.currentModule = currentModule;
+        this.selectionModule.setPipelineStep(currentModule.getModuleStep());
     }
+
+    public void switchToDefaultModule() {
+        if(!currentModule.equals(selectionModule))
+            switchedToDefault = true;
+
+        currentModule = selectionModule;
+    }
+
+    public void switchToDefaultModule(boolean addDefaultMessage) {
+        if(!currentModule.equals(selectionModule))
+            switchedToDefault = addDefaultMessage;
+
+        currentModule = selectionModule;
+    }
+
+    public void continueHandlerDiscussion(Command intent){ this.currentIntent = intent;}
     public boolean isSayingGoodbye() {
         return sayingGoodbye;
     }
@@ -149,6 +175,9 @@ public class DataScienceModuleHandler {
     public DBRepository getRepository() { return repository; }
     public ModuleSubscription getModuleSubscription(){ return subscriptions; }
     public Session getSession(){return this.session;}
-    public void setCurrentModule(Module currentModule) { this.currentModule = currentModule; }
-    public void switchToDefaultModule() { currentModule = defaultModule; }
+    public void switchContextModule() {
+        this.currentModule = contextModule;
+    }
+
+
 }

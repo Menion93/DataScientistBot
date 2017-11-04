@@ -1,5 +1,6 @@
 package main.java.modules.JGTModule;
 
+import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
@@ -17,8 +18,8 @@ public class JGTModule extends Module {
     private int stepIndex;
     private Map<String,Map<String, List<List<String>>>> allAnalysis;
 
-    public JGTModule(DataScienceModuleHandler handler) {
-        super(handler, "JGT");
+    public JGTModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "JGT", step);
         allAnalysis = new HashMap<>();
     }
 

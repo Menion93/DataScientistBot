@@ -1,15 +1,14 @@
 package main.java;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import main.java.core.DataScienceModuleHandler;
 import main.java.modules.JGTModule.JGTModule;
 import main.java.modules.MLModule.MLModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
 import main.java.modules.preprocessing.ColumnWranglerModule;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.*;
 
 /**
  * Created by Andrea on 06/10/2017.
@@ -31,18 +30,18 @@ public class ModuleSubscription {
 
         // Add dataset search modules here
         List<Module> datasetResearchModules = subscriptions.get(PIPELINE_STEPS.DATASET_SEARCH);
-        datasetResearchModules.add(new SchemaAutocompleteModule(handler));
-        datasetResearchModules.add(new JGTModule(handler));
+        datasetResearchModules.add(new SchemaAutocompleteModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
+        datasetResearchModules.add(new JGTModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
 
         List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
-        dataIntegrationModules.add(new ColumnWranglerModule(handler));
+        dataIntegrationModules.add(new ColumnWranglerModule(handler, PIPELINE_STEPS.DATA_INTEGRATION));
 
         //List<Module> featureEngineeringModules = subscriptions.get(PIPELINE_STEPS.FEATURE_ENGINEERING);
-        //featureEngineeringModules.add(new LFEModule(handler));
+        //featureEngineeringModules.add(new LFEModule(handler, PIPELINE_STEPS.FEATURE_ENGINEERING));
 
         List<Module> modelSelectionModules = subscriptions.get(PIPELINE_STEPS.MODEL_SELECTION);
         List<Module> trainingEvalModules = subscriptions.get(PIPELINE_STEPS.TRAINING_EVAL);
-        trainingEvalModules.add(new MLModule(handler));
+        trainingEvalModules.add(new MLModule(handler, PIPELINE_STEPS.TRAINING_EVAL));
 
     }
 
@@ -100,4 +99,13 @@ public class ModuleSubscription {
         return moduleNames;
     }
 
-}
+    public List<String> getModulesListByStep(PIPELINE_STEPS step){
+        List<String> moduleList = new LinkedList<>();
+
+        for(Module module : subscriptions.get(step))
+            moduleList.add(module.getModuleName());
+
+        return moduleList;
+    }
+
+ }

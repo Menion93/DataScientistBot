@@ -1,5 +1,6 @@
 package main.java.modules.preprocessing;
 
+import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
@@ -21,8 +22,8 @@ public class ColumnWranglerModule extends Module {
     private String currentTransf;
 
 
-    public ColumnWranglerModule(DataScienceModuleHandler handler) {
-        super(handler, "ColumnWrangler");
+    public ColumnWranglerModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "ColumnWrangler", step);
         ds2transf = new HashMap<>();
         preprocesser = new Preprocesser();
     }
@@ -81,6 +82,7 @@ public class ColumnWranglerModule extends Module {
                     handler.getSession().getDatasetPool().add(newDataset);
                     stepIndex = 0;
                     saveTransformation(currentDataset.getDatasetName(), column, currentTransf);
+                    handler.switchToDefaultModule();
                     return Arrays.asList("Dataset added in the pool");
                 }
                 return Arrays.asList("Name is not valid, please try again");

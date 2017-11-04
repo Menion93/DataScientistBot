@@ -23,6 +23,8 @@ public class DataScientistBot {
         handler.loadAnalysis("default");
         Scanner scanner = new Scanner(System.in);
 
+        showReply(handler.reply(""));
+
         // This is the main loop, where we register user input and handle the bot replies
         while(!goodbye){
             String userInput = scanner.nextLine();

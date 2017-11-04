@@ -1,5 +1,6 @@
 package main.java.modules;
 
+import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.utils.Helper;
@@ -15,27 +16,40 @@ public abstract class Module {
 
     protected DataScienceModuleHandler handler;
     protected String moduleName;
+    protected ModuleSubscription.PIPELINE_STEPS step;
 
-    public Module(DataScienceModuleHandler handler, String moduleName){
+    public Module(DataScienceModuleHandler handler, String moduleName, ModuleSubscription.PIPELINE_STEPS step){
         this.handler = handler;
         this.moduleName = moduleName;
+        this.step = step;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        Module module = (Module) o;
+        return getModuleName() != null ? getModuleName().equals(module.getModuleName()) : module.getModuleName() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getModuleName() != null ? getModuleName().hashCode() : 0;
     }
 
     public String selectRandomSentence(String[] sentences){
         return Helper.selectRandomString(sentences);
     }
-
-    public abstract List<String> reply(String userInput);
-    public abstract String getModuleDescription();
-    public void exitModule(){
-        handler.changeModule(true);
-    }
     public String getModuleName(){
         return this.moduleName;
     }
+    public ModuleSubscription.PIPELINE_STEPS getModuleStep(){ return step; }
+    public abstract List<String> reply(String userInput);
+    public abstract String getModuleDescription();
     public abstract String makeRecommendation();
     public abstract void loadModuleInstance();
     public abstract void saveModuleInstance();
     public abstract void resetModuleInstance();
     public abstract void resetConversation();
+
+
 }

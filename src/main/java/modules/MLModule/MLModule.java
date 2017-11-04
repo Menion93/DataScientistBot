@@ -1,5 +1,6 @@
 package main.java.modules.MLModule;
 
+import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
@@ -19,8 +20,8 @@ public class MLModule extends Module {
     private Model currentModel;
     private MachineAlgorithms models = new MachineAlgorithms();
 
-    public MLModule(DataScienceModuleHandler handler) {
-        super(handler, "MLAlgorithms");
+    public MLModule(DataScienceModuleHandler handler, ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "MLAlgorithms",step);
         ds2model = new LinkedList<>();
         models = new MachineAlgorithms();
     }
@@ -89,6 +90,7 @@ public class MLModule extends Module {
                     return this.reply(currentTarget);
                 }
                 this.resetConversation();
+                handler.switchToDefaultModule();
                 return this.reply(null);
             }
 

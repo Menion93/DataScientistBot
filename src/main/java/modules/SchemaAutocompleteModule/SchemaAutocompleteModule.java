@@ -1,10 +1,10 @@
 package main.java.modules.SchemaAutocompleteModule;
 
+import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
 import main.java.utils.Helper;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class SchemaAutocompleteModule extends Module {
     private Map<String, Map<String,Double>> allAnalysis;
     private SACTMapper sactool;
 
-    public SchemaAutocompleteModule(DataScienceModuleHandler handler) {
-        super(handler, "SchemaAutocomplete");
+    public SchemaAutocompleteModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "SchemaAutocomplete", step);
         allAnalysis = new HashMap<>();
         sactool = new SACTMapper();
     }
@@ -69,7 +69,7 @@ public class SchemaAutocompleteModule extends Module {
                 else{
                     stepIndex = 0;
                     handler.switchToDefaultModule();
-                    return handler.getCurrentModule().reply("");
+                    return Arrays.asList("Module exited");
                 }
             }
             default:

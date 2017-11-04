@@ -23,7 +23,8 @@ public class ExitModuleCommand extends Command {
 
     @Override
     public List<String> handleCommand() {
-        handler.switchToDefaultModule();
+        handler.getCurrentModule().resetConversation();
+        handler.switchToDefaultModule(false);
         return handler.getCurrentModule().reply("");
     }
 }
