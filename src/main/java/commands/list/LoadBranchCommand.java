@@ -27,8 +27,8 @@ public class LoadBranchCommand extends Command {
             return Arrays.asList("You must give me the name of the branch you want to load");
 
         if(handler.getRepository().isAValidBranch(branchName)){
-            handler.saveCurrentInstance();
-            handler.loadBranch(branchName);
+            handler.getSession().saveCurrentInstance();
+            handler.getSession().loadBranch(branchName);
             return Arrays.asList("Branch loaded");
         }
 

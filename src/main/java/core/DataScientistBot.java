@@ -18,9 +18,9 @@ public class DataScientistBot {
 
         DBRepository repo = new MongoRepository();
         DataScienceModuleHandler handler = new DataScienceModuleHandler(repo);
-        handler.deleteAnalysis("default");
-        handler.createNewAnalysis("default");
-        handler.loadAnalysis("default");
+        handler.getSession().deleteAnalysis("default");
+        handler.getSession().createNewAnalysis("default");
+        handler.getSession().loadAnalysis("default");
         Scanner scanner = new Scanner(System.in);
 
         showReply(handler.reply(""));

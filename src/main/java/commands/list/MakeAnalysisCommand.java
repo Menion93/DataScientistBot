@@ -37,7 +37,7 @@ public class MakeAnalysisCommand extends Command {
                 analysisName = parseAnalysisName();
 
                 if(analysisName != null){
-                    if(handler.createNewBranch(analysisName)){
+                    if(handler.getSession().createNewBranch(analysisName)){
                         stepIndex++;
                         return Arrays.asList("Analysis with name " + analysisName + " created", "Would you like to switch now?");
                     }
@@ -50,7 +50,7 @@ public class MakeAnalysisCommand extends Command {
                 finishedTalking = true;
 
                 if(userInput.equals("yes")){
-                    handler.loadAnalysis(analysisName);
+                    handler.getSession().loadAnalysis(analysisName);
                     return Arrays.asList("Switched to the new project");
                 }
                 return Arrays.asList("As you whish");
@@ -98,7 +98,7 @@ public class MakeAnalysisCommand extends Command {
             return Arrays.asList("Please specify a name for the analysis to create");
         }
 
-        if(handler.createNewAnalysis(analysisName)){
+        if(handler.getSession().createNewAnalysis(analysisName)){
             stepIndex++;
             handler.continueHandlerDiscussion(this);
             finishedTalking = false;

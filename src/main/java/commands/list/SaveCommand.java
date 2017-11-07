@@ -24,7 +24,7 @@ public class SaveCommand extends Command {
 
     @Override
     public List<String> handleCommand() {
-        this.handler.saveCurrentInstance();
+        this.handler.getSession().saveCurrentInstance();
         return Arrays.asList("Current instance saved");
     }
 }

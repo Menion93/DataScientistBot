@@ -3,6 +3,8 @@ package main.java.core;
 import main.java.ModuleSubscription;
 import main.java.modules.ContextModule.ContextModule;
 import main.java.modules.ModuleSelection;
+import main.java.recommending.RecomSubscription;
+import main.java.recommending.Recommendation;
 import main.java.session.Session;
 import main.java.database.DBRepository;
 import main.java.commands.Command;
@@ -22,6 +24,7 @@ public class DataScienceModuleHandler {
     private ContextModule contextModule;
     private ModuleSelection selectionModule;
     private ModuleSubscription subscriptions;
+    private RecomSubscription recommendations;
     private Command currentIntent;
     private Session session;
     private boolean sayingGoodbye;
@@ -32,8 +35,9 @@ public class DataScienceModuleHandler {
         selectionModule = new ModuleSelection(this);
         currentModule = selectionModule;
         subscriptions = new ModuleSubscription(this);
+        recommendations = new RecomSubscription();
         contextModule = new ContextModule(this);
-        this.session = new Session(repository, contextModule);
+        this.session = new Session(repository, contextModule, subscriptions);
         this.repository = repository;
 
         repository.setSession(session);
@@ -93,61 +97,6 @@ public class DataScienceModuleHandler {
         return translator.matchUserInputToCommand(userInput);
     }
 
-    public void saveCurrentInstance(){
-        session.saveSessionInfo();
-        subscriptions.saveAllModulesInstances();
-    }
-
-    public void loadBranch(String branchName) {
-        session.setBranchName(branchName);
-        session.loadSession();
-        subscriptions.loadAllModuleInstances();
-    }
-
-    public boolean createNewBranch(String branchName) {
-        if(!repository.isAValidBranch(branchName)){
-            String prevBranchName = session.getBranchName();
-            session.setBranchName(branchName);
-
-            // This saves the current instance with the new branch name, making a copy of it
-            saveCurrentInstance();
-            session.saveSessionInfo();
-
-            // Now switch to the previous name branch
-            session.setBranchName(prevBranchName);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean createNewAnalysis(String analysisName) {
-        if(!repository.isAValidAnalysis(analysisName)){
-            String prevAnalysis = session.getBranchName();
-            String prevBranchName = session.getBranchName();
-            session.setSessionInfo(analysisName, "main");
-
-            session.saveSessionWithoutTags();
-
-            // Now switch to the previous session info
-            session.setSessionInfo(prevAnalysis, prevBranchName);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public void deleteAnalysis(String analysisName){
-        repository.deleteAnalysis(analysisName);
-    }
-
-    public void loadAnalysis(String analysisName) {
-        session.setSessionInfo(analysisName, "main");
-        session.loadSession();
-        subscriptions.resetAllModuleInstances();
-    }
 
     public void setCurrentModule(Module currentModule) {
         this.currentModule = currentModule;
@@ -186,5 +135,8 @@ public class DataScienceModuleHandler {
     }
     public List<String> getLastMessage() {
         return lastMessage;
+    }
+    public RecomSubscription getRecommendations() {
+        return recommendations;
     }
 }

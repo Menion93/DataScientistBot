@@ -34,7 +34,7 @@ public class BranchCommand extends Command {
             return Arrays.asList("Please specify a name for the branch to create");
         }
 
-        if(handler.createNewBranch(branchName)){
+        if(handler.getSession().createNewBranch(branchName)){
             stepIndex++;
             handler.continueHandlerDiscussion(this);
             finishedTalking = false;
@@ -56,7 +56,7 @@ public class BranchCommand extends Command {
                 branchName = parseBranchName(userInput);
 
                 if(branchName != null){
-                    if(handler.createNewBranch(branchName)){
+                    if(handler.getSession().createNewBranch(branchName)){
                         stepIndex++;
                         return Arrays.asList("Branch with name " + branchName + " created",
                                 "Would you like to switch now?");
@@ -70,8 +70,8 @@ public class BranchCommand extends Command {
                 finishedTalking = true;
 
                 if(userInput.equals("yes")){
-                    handler.saveCurrentInstance();
-                    handler.loadBranch(branchName);
+                    handler.getSession().saveCurrentInstance();
+                    handler.getSession().loadBranch(branchName);
                     return Arrays.asList("Switched to the new branch");
                 }
                 return Arrays.asList("As you whish");

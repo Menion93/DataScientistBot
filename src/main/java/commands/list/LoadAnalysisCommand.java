@@ -42,8 +42,8 @@ public class LoadAnalysisCommand extends Command {
             return Arrays.asList("You must give me the name of the branch you want to load");
 
         if(handler.getRepository().isAValidAnalysis(analysisName)){
-            handler.saveCurrentInstance();
-            handler.loadAnalysis(analysisName);
+            handler.getSession().saveCurrentInstance();
+            handler.getSession().loadAnalysis(analysisName);
             return Arrays.asList("Analysis loaded");
         }
 

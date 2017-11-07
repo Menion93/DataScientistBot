@@ -28,7 +28,7 @@ public class DeleteAnalysisCommand extends Command {
             return Arrays.asList("You cannot delete the analysis you are currently working on");
 
         if(handler.getRepository().isAValidAnalysis(analysisName)){
-            handler.deleteAnalysis(analysisName);
+            handler.getSession().deleteAnalysis(analysisName);
             return Arrays.asList("Analysis with id: " + analysisName + " deleted");
         }
         else{
