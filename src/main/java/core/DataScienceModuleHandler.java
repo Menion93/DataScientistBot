@@ -19,20 +19,21 @@ public class DataScienceModuleHandler {
 
     private DBRepository repository;
     private Module currentModule;
-    private Module contextModule;
+    private ContextModule contextModule;
     private ModuleSelection selectionModule;
     private ModuleSubscription subscriptions;
     private Command currentIntent;
     private Session session;
     private boolean sayingGoodbye;
     private boolean switchedToDefault;
+    private List<String> lastMessage;
 
     public DataScienceModuleHandler(DBRepository repository){
         selectionModule = new ModuleSelection(this);
         currentModule = selectionModule;
         subscriptions = new ModuleSubscription(this);
         contextModule = new ContextModule(this);
-        this.session = new Session(repository);
+        this.session = new Session(repository, contextModule);
         this.repository = repository;
 
         repository.setSession(session);
@@ -52,7 +53,10 @@ public class DataScienceModuleHandler {
             // If we finished talking with the handler, continue with the previous module
             if(currentIntent.finishedTalking())
                 currentIntent = null;
-            else return replies;
+            else{
+                lastMessage = replies;
+                return replies;
+            }
 
         }
         // If there is a special command, handle it
@@ -63,6 +67,7 @@ public class DataScienceModuleHandler {
             if(specialReplies != null){
                 replies.addAll(specialReplies);
                 session.logMessages(specialReplies, false);
+                lastMessage = replies;
                 return replies;
             }
         }
@@ -79,6 +84,7 @@ public class DataScienceModuleHandler {
         }
 
         session.logMessages(replies, false);
+        lastMessage = replies;
         return replies;
     }
 
@@ -122,7 +128,7 @@ public class DataScienceModuleHandler {
             String prevBranchName = session.getBranchName();
             session.setSessionInfo(analysisName, "main");
 
-            session.saveSessionInfo();
+            session.saveSessionWithoutTags();
 
             // Now switch to the previous session info
             session.setSessionInfo(prevAnalysis, prevBranchName);
@@ -178,6 +184,7 @@ public class DataScienceModuleHandler {
     public void switchContextModule() {
         this.currentModule = contextModule;
     }
-
-
+    public List<String> getLastMessage() {
+        return lastMessage;
+    }
 }

@@ -51,7 +51,7 @@ public class MakeAnalysisCommand extends Command {
 
                 if(userInput.equals("yes")){
                     handler.loadAnalysis(analysisName);
-                    return Arrays.asList("Switched to the new branch");
+                    return Arrays.asList("Switched to the new project");
                 }
                 return Arrays.asList("As you whish");
             }
@@ -102,8 +102,8 @@ public class MakeAnalysisCommand extends Command {
             stepIndex++;
             handler.continueHandlerDiscussion(this);
             finishedTalking = false;
-            return Arrays.asList("Branch with name " + analysisName + " created", "Would you like to switch now?");
+            return Arrays.asList("Analysis with name " + analysisName + " created", "Would you like to switch now?");
         }
-        else return Arrays.asList("Branch name is not valid, try with another name");
+        else return Arrays.asList("Analysis name is not valid, try with another name");
     }
 }

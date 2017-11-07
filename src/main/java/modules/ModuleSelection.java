@@ -2,6 +2,9 @@ package main.java.modules;
 
 import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
+import main.java.database.MongoRecomRepository;
+import main.java.recommending.ModuleRecommendation;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +20,7 @@ public class ModuleSelection extends Module {
     private ModuleSubscription.PIPELINE_STEPS pipStep;
     private int pipIndex;
     private boolean stepAvailable;
+    private ModuleRecommendation moduleRecom;
 
 
     public ModuleSelection(DataScienceModuleHandler handler) {
@@ -25,6 +29,8 @@ public class ModuleSelection extends Module {
         pipIndex = 0;
         stepAvailable = true;
         pipStep = ModuleSubscription.PIPELINE_STEPS.values()[pipIndex];
+
+        moduleRecom = new ModuleRecommendation(new MongoRecomRepository(), "recom");
     }
 
     @Override
@@ -62,7 +68,7 @@ public class ModuleSelection extends Module {
                             "Keep working at this phase or go in the opposite direction you previously had specified");
                 }
                 return Arrays.asList("Sorry I could not understand what you want to do",
-                        "I want to know if you want to go to the next or previous step, or you want" +
+                        "I want to know if you want to go to the next or previous step, or you want " +
                                 "to keep working at this level");
 
             }
@@ -87,13 +93,19 @@ public class ModuleSelection extends Module {
     }
 
     private List<String> suggestModules() {
-        List<String> suggested = new LinkedList<>();
-
-        return suggested;
+        return moduleRecom.getBestModulesByPhase(pipStep);
     }
 
     private String printModules(List<String> modules) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Recommended Modules:\n");
+        for(String module : modules){
+            sb.append("\t");
+            sb.append(module);
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     public void setPipelineStep(ModuleSubscription.PIPELINE_STEPS step){

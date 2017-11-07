@@ -156,12 +156,12 @@ public class MongoRepository extends DBRepository {
 
 
     @Override
-    public void registerSession() {
+    public void registerSession(List<String> context) {
         Document query = new Document("sessionName", session.getSessionName())
                 .append("branchName", session.getBranchName());
         MongoCollection<Document> sessionColl = db.getCollection("SessionColl");
         sessionColl.deleteMany(query);
-        sessionColl.insertOne(query);
+        sessionColl.insertOne(query.append("context", context));
 
     }
 

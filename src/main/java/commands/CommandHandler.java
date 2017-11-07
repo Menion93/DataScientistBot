@@ -37,6 +37,7 @@ public class CommandHandler {
         handlerList.add(new ShowDsPoolCommand(handler));
         handlerList.add(new ImportNewDatasetCommand(handler));
         handlerList.add(new LoadDatasetCommand(handler));
+        handlerList.add(new RepeatCommand(handler));
     }
 
     public List<String> matchUserInputToCommand(String userInput){

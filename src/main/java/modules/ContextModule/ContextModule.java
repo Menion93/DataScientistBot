@@ -50,6 +50,9 @@ public class ContextModule extends Module {
         return Arrays.asList(userInput.split(" "));
     }
 
+    public List<String> getContext() {
+        return context;
+    }
     @Override
     public String getModuleDescription() {
         return "You have to sum up the problem in a few tags";
@@ -67,7 +70,6 @@ public class ContextModule extends Module {
 
     @Override
     public void saveModuleInstance() {
-
     }
 
     @Override

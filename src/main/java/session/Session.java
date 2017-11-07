@@ -2,6 +2,7 @@ package main.java.session;
 
 import main.java.dataset.Dataset;
 import main.java.database.DBRepository;
+import main.java.modules.ContextModule.ContextModule;
 import main.java.modules.Module;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,16 +16,17 @@ public class Session {
     private String branchName;
 
     private List<MessageEntry> conversation;
-    private List<Module> modules;
     private DBRepository repository;
     private List<Dataset> datasetsPool;
+    private ContextModule context;
 
-    public Session(DBRepository repository){
+    public Session(DBRepository repository, ContextModule context){
         // Take a new id from the database and assign it to this analysis
 
         conversation = new LinkedList<>();
         datasetsPool = new LinkedList<>();
         this.repository = repository;
+        this.context = context;
     }
 
     public void setSessionInfo(String analysis, String branch){
@@ -45,14 +47,17 @@ public class Session {
             logMessage(message, isTheUser);
     }
 
-    public void saveSessionInfo(){
+    public void saveSessionWithoutTags(){
         if(conversation.size() != 0)
             repository.saveMessage(conversation);
 
         for(Dataset ds : datasetsPool)
             ds.save();
+    }
 
-        repository.registerSession();
+    public void saveSessionInfo(){
+        saveSessionWithoutTags();
+        repository.registerSession(context.getContext());
     }
 
     public String getBranchName(){return this.branchName; }
