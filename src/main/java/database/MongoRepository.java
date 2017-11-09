@@ -416,4 +416,33 @@ public class MongoRepository extends DBRepository {
         );
     }
 
+    @Override
+    public List<String> getModulesBySession() {
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
+        Document document = new Document("sessionName", sessionName).append("branchName", branchName);
+        MongoCollection<Document> moduleColl = db.getCollection("ModuleColl");
+        Document result = moduleColl.find(document).iterator().tryNext();
+
+        if(result == null){
+            System.out.println("Modules data not found");
+            return new LinkedList<>();
+        }
+
+        return (LinkedList<String>) result.get("moduleList");
+    }
+
+    @Override
+    public void saveModulesBySession(List<String> modules) {
+        String sessionName = session.getSessionName();
+        String branchName = session.getBranchName();
+
+        MongoCollection<Document> moduleColl = db.getCollection("ModuleColl");
+        moduleColl.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
+        moduleColl.insertOne(new Document("sessionName", sessionName)
+                .append("branchName",branchName)
+                .append("moduleList", modules)
+        );
+    }
+
 }

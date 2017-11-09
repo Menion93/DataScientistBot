@@ -55,14 +55,6 @@ public class ModuleSubscription {
         return modules;
     }
 
-    public String getModuleDescriptionByName(String name){
-        for(List<Module> moduleL : subscriptions.values())
-            for(Module module : moduleL )
-                if(module.getModuleName().equals(name))
-                    return module.getModuleDescription();
-        return null;
-    }
-
     public void saveAllModulesInstances(){
         for(List<Module> moduleL : subscriptions.values())
             for(Module module : moduleL )
@@ -99,13 +91,28 @@ public class ModuleSubscription {
         return moduleNames;
     }
 
-    public List<String> getModulesListByStep(PIPELINE_STEPS step){
-        List<String> moduleList = new LinkedList<>();
+    public List<Module> getModulesByStep(PIPELINE_STEPS step){
+        return subscriptions.get(step);
+    }
 
-        for(Module module : subscriptions.get(step))
-            moduleList.add(module.getModuleName());
+    public List<Module> getModuleListByNames(LinkedList<String> moduleNames) {
+        List<Module> result = new LinkedList<>();
 
-        return moduleList;
+        for(String name : moduleNames)
+            result.add(getModuleByName(name));
+
+        return result;
+    }
+
+
+    public List<String> getModuleByStep(PIPELINE_STEPS step) {
+        List<Module> modules = subscriptions.get(step);
+        List<String> moduleNames = new LinkedList<>();
+
+        for(Module moduleName : modules)
+            moduleNames.add(moduleName.getModuleName());
+
+        return moduleNames;
     }
 
  }

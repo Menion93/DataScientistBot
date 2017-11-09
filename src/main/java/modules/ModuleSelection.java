@@ -2,26 +2,27 @@ package main.java.modules;
 
 import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
+import main.java.database.DBRepository;
 import main.java.database.MongoRecomRepository;
 import main.java.recommending.ModuleRecommendation;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Andrea on 02/11/2017.
  */
 public class ModuleSelection extends Module {
 
-    private enum STEPS {ONLOAD, ASK_INTENTION, UNDERSTAND_INTENTION, MODULE_SELECTION, EVALUATION_SELECTION, RUN_MORE};
-
+    private enum STEPS {ONLOAD, ASK_INTENTION, UNDERSTAND_INTENTION, STEP_SELECTION,MODULE_SELECTION, EVALUATION_SELECTION, RUN_MORE};
     private STEPS currentStep;
     private ModuleSubscription.PIPELINE_STEPS pipStep;
     private int pipIndex;
     private boolean stepAvailable;
     private ModuleRecommendation moduleRecom;
-
+    private List<String> modules;
+    private String prevUserInput;
+    private STEPS prevStep;
+    private int numOfModuleToRecomm = 5;
 
     public ModuleSelection(DataScienceModuleHandler handler) {
         super(handler, "ModuleSelection", null);
@@ -29,12 +30,14 @@ public class ModuleSelection extends Module {
         pipIndex = 0;
         stepAvailable = true;
         pipStep = ModuleSubscription.PIPELINE_STEPS.values()[pipIndex];
-
-        moduleRecom = new ModuleRecommendation(new MongoRecomRepository(), "recom");
+        modules = new LinkedList<>();
+        moduleRecom = new ModuleRecommendation(new MongoRecomRepository(), "recom", handler);
     }
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = currentStep;
 
         switch (currentStep){
 
@@ -51,13 +54,24 @@ public class ModuleSelection extends Module {
             case ASK_INTENTION:{
                 currentStep = STEPS.UNDERSTAND_INTENTION;
                 return Arrays.asList("It seems you are in the " + pipStep.toString() + " phase",
-                        "You want to go to the next step or do you want to do more analysis at this phase level?");
+                        "You want to go to the next step or do you want to do more analysis at this phase level?",
+                        "Or maybe do you want to know how many steps there are",
+                        "In this case, please write \"show steps\"" );
             }
             case UNDERSTAND_INTENTION:{
-                boolean understood = understandIntention(userInput);
+                boolean understood = false;
+
+                if(userInput.equals("show steps")){
+                    currentStep = STEPS.STEP_SELECTION;
+                    return Arrays.asList("PIPELINE STEPS:", printPipelineSteps(), "Please select the step you are " +
+                            "interested in");
+                }
+                else
+                    understood = understandIntention(userInput);
 
                 if(understood){
-                    List<String> modules = suggestModules();
+                    currentStep = STEPS.MODULE_SELECTION;
+                    List<Module> modules = suggestKModules(pipStep, numOfModuleToRecomm);
                     return Arrays.asList("I can recommend you those modules to work with then",
                             printModules(modules),
                             "Select the one you want to use writing its name");
@@ -72,10 +86,26 @@ public class ModuleSelection extends Module {
                                 "to keep working at this level");
 
             }
+            case STEP_SELECTION:{
+                 ModuleSubscription.PIPELINE_STEPS selectedStep = validateStep(userInput);
+
+                 if(selectedStep != null){
+                     pipStep = selectedStep;
+                     currentStep = STEPS.MODULE_SELECTION;
+                     List<Module> modules = suggestKModules(pipStep, numOfModuleToRecomm);
+                     return Arrays.asList("I can recommend you those modules to work with then",
+                             printModules(modules),
+                             "Select the one you want to use writing its name");
+                 }
+
+                 return Arrays.asList("I could not understand the name of that step",
+                         "PIPELINE STEPS:", printPipelineSteps(), "Please select one of those above");
+            }
 
             case MODULE_SELECTION: {
                 Module module = handler.getModuleSubscription().getModuleByName(userInput);
                 if(module != null){
+                    modules.add(module.getModuleName());
                     handler.getCurrentModule().resetConversation();
                     handler.setCurrentModule(module);
                     List<String> replies = new LinkedList<>();
@@ -92,16 +122,61 @@ public class ModuleSelection extends Module {
         }
     }
 
-    private List<String> suggestModules() {
-        return moduleRecom.getBestModulesByPhase(pipStep);
+    private ModuleSubscription.PIPELINE_STEPS validateStep(String userInput) {
+        for(ModuleSubscription.PIPELINE_STEPS step : ModuleSubscription.PIPELINE_STEPS.values()){
+            if(step.toString().equals(userInput))
+                return step;
+        }
+
+        return null;
     }
 
-    private String printModules(List<String> modules) {
+    private String printPipelineSteps() {
+        StringBuilder sb = new StringBuilder();
+        for(ModuleSubscription.PIPELINE_STEPS step : ModuleSubscription.PIPELINE_STEPS.values()){
+            sb.append("\t");
+            sb.append(step);
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private List<Module> suggestKModules(ModuleSubscription.PIPELINE_STEPS pipStep, int k) {
+        List<Module> recommendedModules = moduleRecom.getBestModulesByPhase(pipStep);
+
+        int numOfSuggModules = recommendedModules.size();
+        if(numOfSuggModules < k)
+            addKRandomModulesByPipStep(k-numOfSuggModules, recommendedModules);
+
+        return recommendedModules;
+    }
+
+    private void addKRandomModulesByPipStep(int k, List<Module> recommended) {
+        List<Module> modules = handler.getModuleSubscription().getModulesByStep(pipStep);
+
+        Collections.shuffle(modules);
+        Iterator<Module> iterator = modules.iterator();
+        int i = 0;
+
+        while(iterator.hasNext() && i<k){
+            Module module = iterator.next();
+
+            if(!recommended.contains(module)){
+                i++;
+                recommended.add(module);
+            }
+        }
+    }
+
+    private String printModules(List<Module> modules) {
         StringBuilder sb = new StringBuilder();
         sb.append("Recommended Modules:\n");
-        for(String module : modules){
+        for(Module module : modules){
             sb.append("\t");
-            sb.append(module);
+            sb.append(module.getModuleName());
+            sb.append(": ");
+            sb.append(module.getModuleDescription());
             sb.append("\n");
         }
 
@@ -119,7 +194,6 @@ public class ModuleSelection extends Module {
         stepAvailable = true;
 
         if(userInput.contains("keep")){
-            currentStep = STEPS.MODULE_SELECTION;
             return true;
         }
 
@@ -128,7 +202,6 @@ public class ModuleSelection extends Module {
             if(pipIndex + 1 < steps.length){
                 pipIndex++;
                 pipStep = steps[pipIndex];
-                currentStep = STEPS.MODULE_SELECTION;
                 return true;
             }
 
@@ -140,7 +213,6 @@ public class ModuleSelection extends Module {
             if(pipIndex - 1 >= 0){
                 pipIndex--;
                 pipStep = steps[pipIndex];
-                currentStep = STEPS.MODULE_SELECTION;
                 return true;
             }
             stepAvailable = false;
@@ -155,18 +227,27 @@ public class ModuleSelection extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return null;
     }
 
     @Override
     public void loadModuleInstance() {
-
+        DBRepository repository = handler.getRepository();
+        modules = repository.getModulesBySession();
     }
 
     @Override
     public void saveModuleInstance() {
-
+        if(!modules.isEmpty()){
+            DBRepository repository = handler.getRepository();
+            repository.saveModulesBySession(modules);
+        }
     }
 
     @Override
@@ -177,5 +258,11 @@ public class ModuleSelection extends Module {
     @Override
     public void resetConversation() {
 
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.currentStep = prevStep;
+        return reply(prevUserInput);
     }
 }

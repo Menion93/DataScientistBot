@@ -14,6 +14,6 @@ public class Context2Modules extends MetadataTask {
 
     @Override
     public void generateMetadata() {
-
+        repository.generateTag2Modules();
     }
 }

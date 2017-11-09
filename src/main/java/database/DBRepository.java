@@ -43,4 +43,6 @@ public abstract class DBRepository {
     public abstract List<Evaluation> getMLModuleAnalysis();
     public abstract Map<String,Map<String,List<String>>> getColumnWranglerAnalysis();
     public abstract void saveColumnWranglerAnalysis(Map<String, Map<String, List<String>>> ds2transf);
+    public abstract List<String> getModulesBySession();
+    public abstract void saveModulesBySession(List<String> modules);
 }

@@ -14,7 +14,7 @@ public class SACTMapper{
 	
 	public SACTMapper(){}
 	
-	public Map<String,Double> getProbabileAttributes(List<String> context){
+	public Map<String,Double> getTopKProbabileAttributes(List<String> context, int k){
 
 		AcsdbToolsManager manager = null;
 		
@@ -33,22 +33,27 @@ public class SACTMapper{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if(result == null)
 			return null;
-		
+
         Map<String,Double> attr2prob = new HashMap<>();
 
 		for(Attrib2Score attr : result)
-			attr2prob.put(attr.getAttrib(), (double) attr.getScore());
+			attr2prob.put(replaceBadChar(attr.getAttrib()), (double) attr.getScore());
 
 		Map<String,Double> sortedMap =
 				attr2prob.entrySet().stream()
 						.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+						.limit(k)
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
 		(e1, e2) -> e1, LinkedHashMap::new));
 
         return sortedMap;
     }
-	
+
+	private String replaceBadChar(String attrib) {
+		return attrib.replace(".","").replace(",", " ");
+	}
+
 }
