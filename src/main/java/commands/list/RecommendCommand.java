@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class RecommendCommand extends Command {
 
-    public String[] KEYWORDS = {"suggest", "recommend", "advice"};
+    public String[] KEYWORDS = {"!suggest", "!recommend", "!advice"};
 
     public RecommendCommand(DataScienceModuleHandler handler) {
         super(handler);

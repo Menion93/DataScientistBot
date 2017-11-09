@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DeleteBranchCommand extends Command {
 
-    public String[] KEYWORDS = {"delete branch", "cancel branch", "erase branch"};
+    public String[] KEYWORDS = {"!delete branch", "!cancel branch", "!erase branch"};
 
     public String branchName;
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ExitModuleCommand extends Command {
 
-    private String[] KEYWORDS = {"exit module"};
+    private String[] KEYWORDS = {"!exit module"};
 
     public ExitModuleCommand(DataScienceModuleHandler handler) {
         super(handler);

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SaveCommand extends Command {
 
-    private String[] KEYWORDS = {"save work", "save session"};
+    private String[] KEYWORDS = {"!save work", "!save session"};
 
     public SaveCommand(DataScienceModuleHandler handler) {
         super(handler);

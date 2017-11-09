@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * Created by Andrea on 24/10/2017.
  */
-public class ShowDataset extends Command {
+public class ShowDatasetCommand extends Command {
 
-    private String[] KEYWORDS = {"show dataset"};
+    private String[] KEYWORDS = {"!show dataset"};
 
     String datasetName;
 
-    public ShowDataset(DataScienceModuleHandler handler) {
+    public ShowDatasetCommand(DataScienceModuleHandler handler) {
         super(handler);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class LoadAnalysisCommand extends Command {
 
-    private String[] KEYWORDS = {"load analysis"};
+    private String[] KEYWORDS = {"!load analysis"};
     private String analysisName;
 
     public LoadAnalysisCommand(DataScienceModuleHandler handler) {

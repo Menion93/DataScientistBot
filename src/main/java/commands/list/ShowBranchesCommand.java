@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ShowBranchesCommand extends Command {
 
-    private String[] KEYWORDS = {"show branches"};
+    private String[] KEYWORDS = {"!show branches"};
 
     public ShowBranchesCommand(DataScienceModuleHandler handler) {
         super(handler);

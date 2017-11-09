@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PrintCurrentSessionCommand extends Command{
 
-    public String[] KEYWORDS = {"session info"};
+    public String[] KEYWORDS = {"!session info"};
 
     public PrintCurrentSessionCommand(DataScienceModuleHandler handler) {
         super(handler);

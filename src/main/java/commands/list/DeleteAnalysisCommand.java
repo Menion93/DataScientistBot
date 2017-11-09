@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DeleteAnalysisCommand extends Command {
 
-    public String[] KEYWORDS = {"delete analysis", "cancel analysis", "erase analysis"};
+    public String[] KEYWORDS = {"!delete analysis", "!cancel analysis", "!erase analysis"};
 
     public String analysisName;
 

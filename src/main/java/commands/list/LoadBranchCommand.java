@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class LoadBranchCommand extends Command {
 
-    public String[] KEYWORDS = {"load branch"};
+    public String[] KEYWORDS = {"!load branch"};
 
     private String branchName;
 

@@ -3,6 +3,7 @@ package main.java.commands.list;
 import main.java.commands.Command;
 import main.java.core.DataScienceModuleHandler;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class RepeatCommand extends Command {
 
-    private String[] KEYWORDS = {"repeat"};
+    private String[] KEYWORDS = {"!repeat"};
 
     public RepeatCommand(DataScienceModuleHandler handler) {
         super(handler);
@@ -23,6 +24,11 @@ public class RepeatCommand extends Command {
 
     @Override
     public List<String> handleCommand() {
-        return handler.getLastMessage();
+        List<String> prevMessages =  handler.getCurrentModule().repeat();
+
+        if(prevMessages == null)
+            prevMessages = new LinkedList<>();
+
+        return prevMessages;
     }
 }

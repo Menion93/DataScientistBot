@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ShowAnalysisCommand extends Command {
 
-    private String[] KEYWORDS = {"show analysis"};
+    private String[] KEYWORDS = {"!show analysis"};
 
     public ShowAnalysisCommand(DataScienceModuleHandler handler) {
         super(handler);

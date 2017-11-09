@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class SwitchModuleCommand extends Command {
 
-    private String[] KEYWORDS = {"change module", "switch module"};
+    private String[] KEYWORDS = {"!change module", "!switch module"};
 
     private String moduleName;
 

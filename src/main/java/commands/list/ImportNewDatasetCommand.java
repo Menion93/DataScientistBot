@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ImportNewDatasetCommand extends Command {
 
-    private String[] KEYWORDS = {"import dataset", "create dataset"};
+    private String[] KEYWORDS = {"!import dataset", "!create dataset"};
     private boolean finishedTalking;
     private enum STEPS {PATH_VALIDATION, ADD_NAME};
     private int stepIndex;

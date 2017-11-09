@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ResetModuleCommand extends Command {
 
-    private String[] KEYWORDS = {"reset module"};
+    private String[] KEYWORDS = {"!reset module"};
 
     public ResetModuleCommand(DataScienceModuleHandler handler) {
         super(handler);

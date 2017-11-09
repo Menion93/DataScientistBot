@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ShowDsPoolCommand extends Command {
 
-    private String[] KEYWORDS = {"show datasets", "show pool"};
+    private String[] KEYWORDS = {"!show datasets", "!show pool"};
 
     public ShowDsPoolCommand(DataScienceModuleHandler handler) {
         super(handler);

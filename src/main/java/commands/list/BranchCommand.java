@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class BranchCommand extends Command {
 
-    private String[] KEYWORDS = {"make branch", "create branch"};
+    private String[] KEYWORDS = {"!make branch", "!create branch"};
     private String branchName;
     private boolean finishedTalking;
 

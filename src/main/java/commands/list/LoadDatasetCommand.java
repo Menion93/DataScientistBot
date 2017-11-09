@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class LoadDatasetCommand extends Command{
 
-    private String[] KEYWORDS = {"load dataset"};
+    private String[] KEYWORDS = {"!load dataset"};
 
     private String datasetName;
 

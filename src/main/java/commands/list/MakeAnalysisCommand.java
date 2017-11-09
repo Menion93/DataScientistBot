@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MakeAnalysisCommand extends Command {
 
-    private String[] KEYWORDS = {"make analysis", "create analysis"};
+    private String[] KEYWORDS = {"!make analysis", "!create analysis"};
     private enum STEPS {ANALYSIS_NAME, SWITCH_ANALYSIS};
     private int stepIndex = 0;
     private String analysisName;
