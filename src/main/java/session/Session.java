@@ -1,6 +1,7 @@
 package main.java.session;
 
 import main.java.ModuleSubscription;
+import main.java.core.DataScienceModuleHandler;
 import main.java.dataset.Dataset;
 import main.java.database.DBRepository;
 import main.java.modules.ContextModule.ContextModule;
@@ -21,15 +22,13 @@ public class Session {
     private List<MessageEntry> conversation;
     private DBRepository repository;
     private List<Dataset> datasetsPool;
-    private ContextModule context;
-    private ModuleSubscription subscriptions;
+    private DataScienceModuleHandler handler;
 
-    public Session(DBRepository repository, ContextModule context, ModuleSubscription subscription){
+    public Session(DBRepository repository, DataScienceModuleHandler handler){
         conversation = new LinkedList<>();
         datasetsPool = new LinkedList<>();
         this.repository = repository;
-        this.context = context;
-        this.subscriptions = subscription;
+        this.handler = handler;
     }
 
     public void setSessionInfo(String analysis, String branch){
@@ -60,18 +59,20 @@ public class Session {
 
     public void saveSessionInfo(){
         saveSessionWithoutTags();
-        repository.registerSession(context.getContext());
+        repository.registerSession(handler.getContextModule().getContext());
     }
 
     public void saveCurrentInstance(){
         saveSessionInfo();
-        subscriptions.saveAllModulesInstances();
+        handler.getModuleSubscription().saveAllModulesInstances();
+        handler.getSelectionModule().saveModuleInstance();
     }
 
     public void loadBranch(String branchName) {
         setBranchName(branchName);
         loadSession();
-        subscriptions.loadAllModuleInstances();
+        handler.getModuleSubscription().loadAllModuleInstances();
+        handler.getSelectionModule().loadModuleInstance();
     }
 
     public boolean createNewBranch(String branchName) {
@@ -116,7 +117,7 @@ public class Session {
     public void loadAnalysis(String analysisName) {
         setSessionInfo(analysisName, "main");
         loadSession();
-        subscriptions.resetAllModuleInstances();
+        handler.getModuleSubscription().resetAllModuleInstances();
     }
 
     public String getBranchName(){return this.branchName; }

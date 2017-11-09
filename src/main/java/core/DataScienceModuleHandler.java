@@ -29,7 +29,6 @@ public class DataScienceModuleHandler {
     private Session session;
     private boolean sayingGoodbye;
     private boolean switchedToDefault;
-    private List<String> lastMessage;
 
     public DataScienceModuleHandler(DBRepository repository){
         selectionModule = new ModuleSelection(this);
@@ -37,7 +36,7 @@ public class DataScienceModuleHandler {
         subscriptions = new ModuleSubscription(this);
         recommendations = new RecomSubscription();
         contextModule = new ContextModule(this);
-        this.session = new Session(repository, contextModule, subscriptions);
+        this.session = new Session(repository, this);
         this.repository = repository;
 
         repository.setSession(session);
@@ -58,7 +57,6 @@ public class DataScienceModuleHandler {
             if(currentIntent.finishedTalking())
                 currentIntent = null;
             else{
-                lastMessage = replies;
                 return replies;
             }
 
@@ -71,7 +69,6 @@ public class DataScienceModuleHandler {
             if(specialReplies != null){
                 replies.addAll(specialReplies);
                 session.logMessages(specialReplies, false);
-                lastMessage = replies;
                 return replies;
             }
         }
@@ -82,13 +79,11 @@ public class DataScienceModuleHandler {
 
         // If you are exiting a module, add another message from the selection module
         if(switchedToDefault){
-            System.out.println("im here");
             replies.addAll(currentModule.reply(""));
             switchedToDefault = false;
         }
 
         session.logMessages(replies, false);
-        lastMessage = replies;
         return replies;
     }
 
@@ -96,7 +91,6 @@ public class DataScienceModuleHandler {
         CommandHandler translator = new CommandHandler(this);
         return translator.matchUserInputToCommand(userInput);
     }
-
 
     public void setCurrentModule(Module currentModule) {
         this.currentModule = currentModule;
@@ -117,6 +111,10 @@ public class DataScienceModuleHandler {
         currentModule = selectionModule;
     }
 
+    public List<String> getTags(){
+        return contextModule.getContext();
+    }
+
     public void continueHandlerDiscussion(Command intent){ this.currentIntent = intent;}
     public boolean isSayingGoodbye() {
         return sayingGoodbye;
@@ -133,10 +131,14 @@ public class DataScienceModuleHandler {
     public void switchContextModule() {
         this.currentModule = contextModule;
     }
-    public List<String> getLastMessage() {
-        return lastMessage;
-    }
     public RecomSubscription getRecommendations() {
         return recommendations;
     }
+    public ContextModule getContextModule() {
+        return contextModule;
+    }
+    public ModuleSelection getSelectionModule() {
+        return selectionModule;
+    }
+
 }
