@@ -17,6 +17,8 @@ public class JGTModule extends Module {
     private enum STEPS {SCHEMA_INPUT, VALIDATE_SCHEMA, SEARCH_FOR_MORE};
     private int stepIndex;
     private Map<String,Map<String, List<List<String>>>> allAnalysis;
+    private String prevUserInput;
+    private int prevStep;
 
     public JGTModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "JGT", step);
@@ -25,6 +27,8 @@ public class JGTModule extends Module {
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = stepIndex;
 
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -106,6 +110,11 @@ public class JGTModule extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return "I've got nothing to recommend to you at the moment";
     }
@@ -133,5 +142,11 @@ public class JGTModule extends Module {
     @Override
     public void resetConversation() {
         stepIndex = 0;
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.stepIndex = prevStep;
+        return reply(prevUserInput);
     }
 }

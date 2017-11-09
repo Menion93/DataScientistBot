@@ -19,6 +19,8 @@ public class SchemaAutocompleteModule extends Module {
     private int stepIndex;
     private Map<String, Map<String,Double>> allAnalysis;
     private SACTMapper sactool;
+    private String prevUserInput;
+    private int prevStep;
 
     public SchemaAutocompleteModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "SchemaAutocomplete", step);
@@ -28,6 +30,8 @@ public class SchemaAutocompleteModule extends Module {
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = stepIndex;
 
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -45,7 +49,7 @@ public class SchemaAutocompleteModule extends Module {
                     Map<String,Double> singleAnalysis = allAnalysis.get(orderedSchema);
                     String result;
                     if(singleAnalysis == null){
-                        Map<String,Double> anResult = sactool.getProbabileAttributes(schema);
+                        Map<String,Double> anResult = sactool.getTopKProbabileAttributes(schema, 10);
                         allAnalysis.put(orderedSchema, anResult);
                         result = printResult(anResult);
                     }
@@ -81,7 +85,7 @@ public class SchemaAutocompleteModule extends Module {
     private String printResult(Map<String, Double> probabileAttribute) {
         StringBuilder sb = new StringBuilder();
 
-        for(Map.Entry entry : probabileAttribute.entrySet()){
+        for(Map.Entry<String,Double> entry : probabileAttribute.entrySet()){
             sb.append(entry.getKey());
             sb.append("\t");
             sb.append(entry.getValue());
@@ -99,6 +103,11 @@ public class SchemaAutocompleteModule extends Module {
     public String getModuleDescription() {
         return "I know how to suggest you a schema you might be interested in. Just give me a name of a few attributes" +
                 "you have in mind, and I will give you the best matches";
+    }
+
+    @Override
+    public String getModuleUsage() {
+        return null;
     }
 
     @Override
@@ -129,5 +138,11 @@ public class SchemaAutocompleteModule extends Module {
     @Override
     public void resetConversation() {
         stepIndex = 0;
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.stepIndex = prevStep;
+        return reply(prevUserInput);
     }
 }

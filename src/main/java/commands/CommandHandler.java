@@ -33,7 +33,7 @@ public class CommandHandler {
         handlerList.add(new PrintCurrentSessionCommand(handler));
         handlerList.add(new ShowBranchesCommand(handler));
         handlerList.add(new ShowAnalysisCommand(handler));
-        handlerList.add(new ShowDataset(handler));
+        handlerList.add(new ShowDatasetCommand(handler));
         handlerList.add(new ShowDsPoolCommand(handler));
         handlerList.add(new ImportNewDatasetCommand(handler));
         handlerList.add(new LoadDatasetCommand(handler));

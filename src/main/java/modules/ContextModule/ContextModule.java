@@ -59,6 +59,11 @@ public class ContextModule extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return null;
     }
@@ -80,5 +85,10 @@ public class ContextModule extends Module {
     @Override
     public void resetConversation() {
 
+    }
+
+    @Override
+    public List<String> repeat() {
+        return Arrays.asList("Please write some tags that fits your problem, like \"classification\", \"politics\" etc...");
     }
 }

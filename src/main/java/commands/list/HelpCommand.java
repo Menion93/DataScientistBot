@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class HelpCommand extends Command {
 
-    private String[] KEYWORDS = {"description", "what can you do?", "exit bot", "help me", "help", "describe"};
+    private String[] KEYWORDS = {"!help", "!what can you do?", };
 
     public HelpCommand(DataScienceModuleHandler handler) {
         super(handler);
@@ -19,7 +19,7 @@ public class HelpCommand extends Command {
 
     @Override
     public List<String> handleCommand() {
-        return Arrays.asList(handler.getCurrentModule().getModuleDescription());
+        return Arrays.asList(handler.getCurrentModule().getModuleUsage());
     }
 
     @Override

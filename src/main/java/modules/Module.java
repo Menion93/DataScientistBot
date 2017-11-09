@@ -45,11 +45,13 @@ public abstract class Module {
     public ModuleSubscription.PIPELINE_STEPS getModuleStep(){ return step; }
     public abstract List<String> reply(String userInput);
     public abstract String getModuleDescription();
+    public abstract String getModuleUsage();
     public abstract String makeRecommendation();
     public abstract void loadModuleInstance();
     public abstract void saveModuleInstance();
     public abstract void resetModuleInstance();
     public abstract void resetConversation();
+    public abstract List<String> repeat();
 
 
 }

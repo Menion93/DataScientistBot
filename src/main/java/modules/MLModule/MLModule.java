@@ -19,6 +19,8 @@ public class MLModule extends Module {
     private String currentTarget;
     private Model currentModel;
     private MachineAlgorithms models = new MachineAlgorithms();
+    private String prevUserInput;
+    private int prevStep;
 
     public MLModule(DataScienceModuleHandler handler, ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "MLAlgorithms",step);
@@ -28,6 +30,8 @@ public class MLModule extends Module {
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = stepIndex;
 
         if(handler.getSession().getDatasetPool().size() == 0)
             return Arrays.asList("You have to add a dataset in the pool first!");
@@ -135,6 +139,11 @@ public class MLModule extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return null;
     }
@@ -161,5 +170,11 @@ public class MLModule extends Module {
     @Override
     public void resetConversation() {
         stepIndex = 0;
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.stepIndex = prevStep;
+        return reply(prevUserInput);
     }
 }

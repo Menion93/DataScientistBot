@@ -20,7 +20,8 @@ public class ColumnWranglerModule extends Module {
     private Dataset newDataset;
     private String column;
     private String currentTransf;
-
+    private String prevUserInput;
+    private int prevStep;
 
     public ColumnWranglerModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "ColumnWrangler", step);
@@ -31,6 +32,8 @@ public class ColumnWranglerModule extends Module {
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = stepIndex;
 
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -119,6 +122,11 @@ public class ColumnWranglerModule extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return null;
     }
@@ -145,5 +153,11 @@ public class ColumnWranglerModule extends Module {
     @Override
     public void resetConversation() {
 
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.stepIndex = prevStep;
+        return reply(prevUserInput);
     }
 }

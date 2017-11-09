@@ -21,6 +21,9 @@ public class LFEModule extends Module {
     private Dataset currentDataset;
     private Map<Integer, String> anResult;
     private LFEMapper lfetool;
+    private String prevUserInput;
+    private int prevStep;
+
 
     public LFEModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "LFE", step);
@@ -30,6 +33,8 @@ public class LFEModule extends Module {
 
     @Override
     public List<String> reply(String userInput) {
+        prevUserInput = userInput;
+        prevStep = stepIndex;
 
         if(handler.getSession().getDatasetPool().size() == 0)
             return Arrays.asList("You have to add a dataset in the pool first!");
@@ -121,6 +126,11 @@ public class LFEModule extends Module {
     }
 
     @Override
+    public String getModuleUsage() {
+        return null;
+    }
+
+    @Override
     public String makeRecommendation() {
         return "I've got nothing to recommend to you at the moment";
     }
@@ -148,5 +158,11 @@ public class LFEModule extends Module {
     @Override
     public void resetConversation() {
         stepIndex = 0;
+    }
+
+    @Override
+    public List<String> repeat() {
+        this.stepIndex = prevStep;
+        return reply(prevUserInput);
     }
 }
