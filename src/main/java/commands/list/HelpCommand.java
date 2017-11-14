@@ -26,4 +26,9 @@ public class HelpCommand extends Command {
     public boolean commandIsRequested(String userInput){
         return checkKeywordsInText(KEYWORDS, userInput);
     }
+
+    @Override
+    public String getBasicCommand() {
+        return "!help";
+    }
 }

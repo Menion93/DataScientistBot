@@ -22,6 +22,9 @@ public class SchemaAutocompleteModule extends Module {
     private String prevUserInput;
     private int prevStep;
 
+    private String[] intro = {"Write the name of some attributes you are interested in, I will look the attributes",
+                               "Write a partial schema like <party president>, I will search for you the next attribute"};
+
     public SchemaAutocompleteModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "SchemaAutocomplete", step);
         allAnalysis = new HashMap<>();
@@ -39,7 +42,7 @@ public class SchemaAutocompleteModule extends Module {
 
             case INSTRUCTIONS: {
                 stepIndex++;
-                return Arrays.asList("Write the name of some attributes you are interested in, I will look the attributes");
+                return Arrays.asList(selectRandomSentence(intro));
             }
             case SCHEMA_INPUT: {
                 List<String> schema = extractSchema(userInput);

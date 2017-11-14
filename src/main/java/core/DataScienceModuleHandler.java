@@ -4,13 +4,11 @@ import main.java.ModuleSubscription;
 import main.java.modules.ContextModule.ContextModule;
 import main.java.modules.ModuleSelection;
 import main.java.recommending.RecomSubscription;
-import main.java.recommending.Recommendation;
 import main.java.session.Session;
 import main.java.database.DBRepository;
 import main.java.commands.Command;
 import main.java.commands.CommandHandler;
 import main.java.modules.Module;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,9 +27,11 @@ public class DataScienceModuleHandler {
     private Session session;
     private boolean sayingGoodbye;
     private boolean switchedToDefault;
+    private CommandHandler commandHandler;
 
     public DataScienceModuleHandler(DBRepository repository){
-        selectionModule = new ModuleSelection(this);
+        commandHandler = new CommandHandler(this);
+        selectionModule = new ModuleSelection(this, commandHandler);
         currentModule = selectionModule;
         subscriptions = new ModuleSubscription(this);
         recommendations = new RecomSubscription();
@@ -88,8 +88,7 @@ public class DataScienceModuleHandler {
     }
 
     public List<String> specialInputDetected(String userInput){
-        CommandHandler translator = new CommandHandler(this);
-        return translator.matchUserInputToCommand(userInput);
+        return commandHandler.matchUserInputToCommand(userInput);
     }
 
     public void setCurrentModule(Module currentModule) {

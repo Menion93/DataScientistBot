@@ -39,6 +39,11 @@ public class ShowDatasetCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!show dataset <name>";
+    }
+
+    @Override
     public List<String> handleCommand() {
         if(datasetName == null)
             return Arrays.asList("Please you have to specify a name for a dataset");

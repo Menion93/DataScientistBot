@@ -68,10 +68,9 @@ public abstract class Command {
         return allContained;
     }
 
-
+    public abstract String getBasicCommand();
     public List<String> reply(String userInput){
         return null;
     }
-
     public abstract List<String> handleCommand();
 }

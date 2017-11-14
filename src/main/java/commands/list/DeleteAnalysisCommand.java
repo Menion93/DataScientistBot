@@ -54,4 +54,9 @@ public class DeleteAnalysisCommand extends Command {
 
         return true;
     }
+
+    @Override
+    public String getBasicCommand() {
+        return "!delete analysis";
+    }
 }

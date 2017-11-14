@@ -23,6 +23,11 @@ public class RepeatCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!repeat";
+    }
+
+    @Override
     public List<String> handleCommand() {
         List<String> prevMessages =  handler.getCurrentModule().repeat();
 

@@ -1,11 +1,13 @@
 package main.java.modules;
 
 import main.java.ModuleSubscription;
+import main.java.commands.Command;
+import main.java.commands.CommandHandler;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.database.MongoRecomRepository;
 import main.java.recommending.ModuleRecommendation;
-
+import main.java.commands.Command;
 import java.util.*;
 
 /**
@@ -23,8 +25,9 @@ public class ModuleSelection extends Module {
     private String prevUserInput;
     private STEPS prevStep;
     private int numOfModuleToRecomm = 5;
+    private CommandHandler commandHandler;
 
-    public ModuleSelection(DataScienceModuleHandler handler) {
+    public ModuleSelection(DataScienceModuleHandler handler, CommandHandler commandHanlder) {
         super(handler, "ModuleSelection", null);
         currentStep = STEPS.ONLOAD;
         pipIndex = 0;
@@ -32,6 +35,7 @@ public class ModuleSelection extends Module {
         pipStep = ModuleSubscription.PIPELINE_STEPS.values()[pipIndex];
         modules = new LinkedList<>();
         moduleRecom = new ModuleRecommendation(new MongoRecomRepository(), "recom", handler);
+        this.commandHandler = commandHanlder;
     }
 
     @Override
@@ -228,7 +232,14 @@ public class ModuleSelection extends Module {
 
     @Override
     public String getModuleUsage() {
-        return null;
+        StringBuilder sb = new StringBuilder("Useful commands:\n");
+
+        for(Command command : commandHandler.getCommandList()){
+            sb.append("\t");
+            sb.append(command.getBasicCommand());
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     @Override

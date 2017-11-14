@@ -23,6 +23,11 @@ public class ShowModulesCommand extends Command{
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!show modules";
+    }
+
+    @Override
     public List<String> handleCommand() {
         List<String> moduleNames = handler.getModuleSubscription().getModuleNames();
 

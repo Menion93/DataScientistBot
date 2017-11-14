@@ -24,6 +24,11 @@ public class ShowDsPoolCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!show datasets";
+    }
+
+    @Override
     public List<String> handleCommand() {
         StringBuilder sb = new StringBuilder();
         sb.append("Pool Datasets:\n");

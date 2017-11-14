@@ -34,7 +34,8 @@ public class MLModule extends Module {
         prevStep = stepIndex;
 
         if(handler.getSession().getDatasetPool().size() == 0)
-            return Arrays.asList("You have to add a dataset in the pool first!");
+            return Arrays.asList("You have to add a dataset in the pool first!",
+                    "Type \"!import dataset\" to add a new dataset first, or exit the module typing \"!exit module\"");
 
         STEPS currentStep = STEPS.values()[stepIndex];
 
@@ -135,12 +136,14 @@ public class MLModule extends Module {
 
     @Override
     public String getModuleDescription() {
-        return "You can train your dataset on the models contained in this module";
+        return "I know ho to apply various machine learning models";
     }
 
     @Override
     public String getModuleUsage() {
-        return null;
+        return "You need to have a dataset to the pool first. I will need a dataset, a target class, " +
+                "a model and an evaluation score. After that I will tell you the results of the training with " +
+                " cross validation";
     }
 
     @Override

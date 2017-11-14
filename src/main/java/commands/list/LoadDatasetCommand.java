@@ -38,6 +38,11 @@ public class LoadDatasetCommand extends Command{
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!load dataset";
+    }
+
+    @Override
     public List<String> handleCommand() {
         if(datasetName == null)
             return Arrays.asList("You need to specify the dataset name to load");

@@ -20,6 +20,9 @@ public class JGTModule extends Module {
     private String prevUserInput;
     private int prevStep;
 
+    private String[] intro = {"Write the name of some attributes you are interested in, I will search for similar datasets",
+                              "Write relevant attributes separated by a space, I will look for interesting schemas for you"};
+
     public JGTModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "JGT", step);
         allAnalysis = new HashMap<>();
@@ -36,7 +39,7 @@ public class JGTModule extends Module {
 
             case SCHEMA_INPUT: {
                 stepIndex++;
-                return Arrays.asList("Write the name of some attributes you are interested in, I will search for similar datasets");
+                return Arrays.asList(Helper.selectRandomString(intro));
             }
             case VALIDATE_SCHEMA: {
                 List<String> schemas = extractSchema(userInput);
@@ -106,12 +109,13 @@ public class JGTModule extends Module {
 
     @Override
     public String getModuleDescription() {
-        return "I can show you similar datasets given a schema.";
+        return "I can recommend you similar dataset to join given a schema.";
     }
 
     @Override
     public String getModuleUsage() {
-        return null;
+        return "Write the schema writing its attributes separated by a space. I will " +
+                "give you the result in a few seconds";
     }
 
     @Override

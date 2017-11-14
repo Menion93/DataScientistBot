@@ -14,6 +14,7 @@ public class Dataset {
     private String datasetName; // This is the id of the dataset
     private String root; // This is the name of the first node in the ds versioning graph
     private String from; // This is name of the dataset that generated this one
+    private String path; // The path to the dataset
     private boolean newDataset; // This checks if its a new dataset or not
     private List<String> schema;
     private List<String> types;
@@ -242,6 +243,8 @@ public class Dataset {
     public void setTypes(List<String> types) {
         this.types = types;
     }
-
+    public void setPath(String path) {
+        this.path = path;
+    }
 
 }

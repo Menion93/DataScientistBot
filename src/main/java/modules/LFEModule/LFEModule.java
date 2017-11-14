@@ -37,7 +37,8 @@ public class LFEModule extends Module {
         prevStep = stepIndex;
 
         if(handler.getSession().getDatasetPool().size() == 0)
-            return Arrays.asList("You have to add a dataset in the pool first!");
+            return Arrays.asList("You have to add a dataset in the pool first!", "Type \"!import dataset\" to add a new dataset first, " +
+                    "or exit the module typing \"!exit module\"");
 
         STEPS currentStep = STEPS.values()[stepIndex];
 

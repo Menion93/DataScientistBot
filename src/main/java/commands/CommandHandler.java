@@ -10,39 +10,43 @@ import java.util.List;
  */
 public class CommandHandler {
 
-    List<Command> handlerList;
+    private List<Command> commandList;
 
     public CommandHandler(DataScienceModuleHandler handler){
 
-        handlerList = new LinkedList<>();
+        commandList = new LinkedList<>();
 
-        handlerList.add(new BranchCommand(handler));
-        handlerList.add(new DeleteBranchCommand(handler));
-        handlerList.add(new ExitBotCommand(handler));
-        handlerList.add(new LoadBranchCommand(handler));
-        handlerList.add(new RecommendCommand(handler));
-        handlerList.add(new HelpCommand(handler));
-        handlerList.add(new MakeAnalysisCommand(handler));
-        handlerList.add(new LoadAnalysisCommand(handler));
-        handlerList.add(new DeleteAnalysisCommand(handler));
-        handlerList.add(new SwitchModuleCommand(handler));
-        handlerList.add(new ShowModulesCommand(handler));
-        handlerList.add(new ResetModuleCommand(handler));
-        handlerList.add(new ExitModuleCommand(handler));
-        handlerList.add(new SaveCommand(handler));
-        handlerList.add(new PrintCurrentSessionCommand(handler));
-        handlerList.add(new ShowBranchesCommand(handler));
-        handlerList.add(new ShowAnalysisCommand(handler));
-        handlerList.add(new ShowDatasetCommand(handler));
-        handlerList.add(new ShowDsPoolCommand(handler));
-        handlerList.add(new ImportNewDatasetCommand(handler));
-        handlerList.add(new LoadDatasetCommand(handler));
-        handlerList.add(new RepeatCommand(handler));
+        commandList.add(new BranchCommand(handler));
+        commandList.add(new DeleteBranchCommand(handler));
+        commandList.add(new ExitBotCommand(handler));
+        commandList.add(new LoadBranchCommand(handler));
+        commandList.add(new RecommendCommand(handler));
+        commandList.add(new HelpCommand(handler));
+        commandList.add(new MakeAnalysisCommand(handler));
+        commandList.add(new LoadAnalysisCommand(handler));
+        commandList.add(new DeleteAnalysisCommand(handler));
+        commandList.add(new SwitchModuleCommand(handler));
+        commandList.add(new ShowModulesCommand(handler));
+        commandList.add(new ResetModuleCommand(handler));
+        commandList.add(new ExitModuleCommand(handler));
+        commandList.add(new SaveCommand(handler));
+        commandList.add(new PrintCurrentSessionCommand(handler));
+        commandList.add(new ShowBranchesCommand(handler));
+        commandList.add(new ShowAnalysisCommand(handler));
+        commandList.add(new ShowDatasetCommand(handler));
+        commandList.add(new ShowDsPoolCommand(handler));
+        commandList.add(new ImportNewDatasetCommand(handler));
+        commandList.add(new LoadDatasetCommand(handler));
+        commandList.add(new RepeatCommand(handler));
+    }
+
+    public List<Command> getCommandList(){
+        return commandList;
     }
 
     public List<String> matchUserInputToCommand(String userInput){
 
-        for(Command handler : handlerList){
+        for(Command handler : commandList){
             if(handler.commandIsRequested(userInput)){
                 return handler.handleCommand();
             }
@@ -50,4 +54,5 @@ public class CommandHandler {
 
         return null;
     }
+
 }

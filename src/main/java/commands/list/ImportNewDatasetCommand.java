@@ -13,7 +13,7 @@ public class ImportNewDatasetCommand extends Command {
 
     private String[] KEYWORDS = {"!import dataset", "!create dataset"};
     private boolean finishedTalking;
-    private enum STEPS {PATH_VALIDATION, ADD_NAME};
+    private enum STEPS {PATH_VALIDATION, ADD_NAME}
     private int stepIndex;
     private Dataset newDataset;
 
@@ -36,6 +36,7 @@ public class ImportNewDatasetCommand extends Command {
                 newDataset = new Dataset(handler.getRepository());
                 if(newDataset.loadFromFS(path)){
                     stepIndex++;
+                    newDataset.setPath(path);
                     return Arrays.asList("Dataset loaded with success", "Now please choose a name for the new dataset");
                 }
                 return Arrays.asList("I could not found the dataset at the path specified, can you write it again?");
@@ -67,6 +68,11 @@ public class ImportNewDatasetCommand extends Command {
     @Override
     public boolean finishedTalking(){
         return finishedTalking;
+    }
+
+    @Override
+    public String getBasicCommand() {
+        return "!import dataset";
     }
 
     @Override

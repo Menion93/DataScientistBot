@@ -38,6 +38,11 @@ public class SwitchModuleCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!switch module";
+    }
+
+    @Override
     public List<String> handleCommand() {
         Module newModule = handler.getModuleSubscription().getModuleByName(moduleName);
         if(newModule != null){

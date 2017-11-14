@@ -23,6 +23,11 @@ public class ShowAnalysisCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!show analysis";
+    }
+
+    @Override
     public List<String> handleCommand() {
         StringBuilder sb = new StringBuilder();
         List<String> analysis = handler.getRepository().getAnalysis();

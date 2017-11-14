@@ -29,7 +29,6 @@ public class ColumnWranglerModule extends Module {
         preprocesser = new Preprocesser();
     }
 
-
     @Override
     public List<String> reply(String userInput) {
         prevUserInput = userInput;
@@ -41,7 +40,8 @@ public class ColumnWranglerModule extends Module {
 
             case INSTRUCTION: {
                 if(handler.getSession().getDatasetPool().size() == 0)
-                    return Arrays.asList("You must add a dataset to the pool first!");
+                    return Arrays.asList("You must add a dataset to the pool first!",
+                            "Type \"!import dataset\" to add a new dataset first, or exit the module typing \"!exit module\"");
                 stepIndex++;
                 String dsList = handler.getSession().printDatasetList();
                 return Arrays.asList("Select the dataset you want to work with", dsList);
@@ -118,12 +118,13 @@ public class ColumnWranglerModule extends Module {
 
     @Override
     public String getModuleDescription() {
-        return "With this module you can apply transformation to the datasets";
+        return "It can apply basic transformation to the column of a dataset";
     }
 
     @Override
     public String getModuleUsage() {
-        return null;
+        return "Requirements: a dataset is present in the pool.\nYou need to tell me which dataset, which attribute, " +
+                "and which transformation you want to apply. A new dataset then will be created.";
     }
 
     @Override

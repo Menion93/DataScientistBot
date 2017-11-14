@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SaveCommand extends Command {
 
-    private String[] KEYWORDS = {"!save work", "!save session"};
+    private String[] KEYWORDS = {"!save", "!save session"};
 
     public SaveCommand(DataScienceModuleHandler handler) {
         super(handler);
@@ -20,6 +20,11 @@ public class SaveCommand extends Command {
     @Override
     public boolean commandIsRequested(String userInput) {
         return checkKeywordsInText(KEYWORDS, userInput);
+    }
+
+    @Override
+    public String getBasicCommand() {
+        return "!save";
     }
 
     @Override

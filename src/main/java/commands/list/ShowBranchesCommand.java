@@ -23,6 +23,11 @@ public class ShowBranchesCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!show branches";
+    }
+
+    @Override
     public List<String> handleCommand() {
         StringBuilder sb = new StringBuilder();
         List<String> branches = handler.getRepository().getBranches();

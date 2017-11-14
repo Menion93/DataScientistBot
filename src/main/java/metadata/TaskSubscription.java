@@ -2,7 +2,7 @@ package main.java.metadata;
 
 import main.java.database.MetadataRepository;
 import main.java.database.MongoMetadataRepository;
-import main.java.metadata.tasks.Context2Modules;
+import main.java.metadata.tasks.*;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -18,7 +18,10 @@ public class TaskSubscription {
         MetadataRepository repository = new MongoMetadataRepository();
         metadataTasks = new HashMap<>();
 
+        metadataTasks.put("Context2Dataset", new Context2Dataset(repository));
+        metadataTasks.put("Context2Model", new Context2Model(repository));
         metadataTasks.put("Context2Modules", new Context2Modules(repository));
+
     }
 
     public void runAllTasks(){

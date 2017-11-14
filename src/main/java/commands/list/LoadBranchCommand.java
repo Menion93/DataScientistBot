@@ -80,4 +80,9 @@ public class LoadBranchCommand extends Command {
 
     }
 
+    @Override
+    public String getBasicCommand() {
+        return "!load branch";
+    }
+
 }

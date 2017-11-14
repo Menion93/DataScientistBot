@@ -23,6 +23,11 @@ public class ResetModuleCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!reset module";
+    }
+
+    @Override
     public List<String> handleCommand() {
         handler.getCurrentModule().resetModuleInstance();
         return Arrays.asList("Module resetted");

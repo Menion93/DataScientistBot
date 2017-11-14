@@ -37,6 +37,11 @@ public class LoadAnalysisCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!load analysis <name>";
+    }
+
+    @Override
     public List<String> handleCommand() {
         if(analysisName == null)
             return Arrays.asList("You must give me the name of the branch you want to load");

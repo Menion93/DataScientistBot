@@ -93,6 +93,11 @@ public class BranchCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!make branch";
+    }
+
+    @Override
     public boolean commandIsRequested(String userInput) {
         branchName = null;
         boolean keyword_detected = checkKeywordsInText(KEYWORDS, userInput);

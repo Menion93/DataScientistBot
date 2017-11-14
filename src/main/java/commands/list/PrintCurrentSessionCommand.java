@@ -23,6 +23,11 @@ public class PrintCurrentSessionCommand extends Command{
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!session info";
+    }
+
+    @Override
     public List<String> handleCommand() {
         return Arrays.asList(handler.getSession().toString());
     }

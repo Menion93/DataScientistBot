@@ -58,33 +58,11 @@ public class DeleteBranchCommand extends Command {
 
         return true;
 
-        // Initialize NLP tools
-        //parseUserInput(userInput);
+    }
 
-        /*List<String> possibleIds = new LinkedList<>();
-
-        // Iterate through all the labelled words
-        for(CoreMap sentence: sentences) {
-            // traversing the words in the current sentence
-            // a CoreLabel is a CoreMap with additional token-specific methods
-            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-                // this is the text of the token
-                String word = token.get(CoreAnnotations.TextAnnotation.class);
-                // this is the POS tag of the token
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-                // this is the NER label of the token
-                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-
-                // Check if it is a dobj or a noun, and add those option to the possible id set
-                if(pos.toLowerCase().contains("NN") || pos.toLowerCase().contains("obj"))
-                    possibleIds.add(pos);
-            }
-
-        }
-
-        analysisName = checkPossibleBranchNames(possibleIds);*/
-
-        //return true;
+    @Override
+    public String getBasicCommand() {
+        return "!delete branch";
     }
 
     /*public String checkPossibleBranchNames(List<String> ids){

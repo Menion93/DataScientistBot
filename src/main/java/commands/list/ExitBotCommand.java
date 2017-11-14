@@ -47,6 +47,11 @@ public class ExitBotCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!exit bot";
+    }
+
+    @Override
     public boolean commandIsRequested(String userInput){
         return  checkKeywordsInText(KEYWORDS, userInput);
     }

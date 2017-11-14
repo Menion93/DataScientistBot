@@ -66,6 +66,11 @@ public class MakeAnalysisCommand extends Command {
         return finishedTalking;
     }
 
+    @Override
+    public String getBasicCommand() {
+        return "!make analysis";
+    }
+
     private String parseAnalysisName() {
         CoreMap word = sentences.get(0);
         if(word != null)

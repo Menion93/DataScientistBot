@@ -22,6 +22,11 @@ public class ExitModuleCommand extends Command {
     }
 
     @Override
+    public String getBasicCommand() {
+        return "!exit module";
+    }
+
+    @Override
     public List<String> handleCommand() {
         handler.getCurrentModule().resetConversation();
         handler.switchToDefaultModule(false);
