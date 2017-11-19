@@ -1,12 +1,11 @@
 package main.java;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import main.java.core.DataScienceModuleHandler;
 import main.java.modules.JGTModule.JGTModule;
 import main.java.modules.MLModule.MLModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
-import main.java.modules.preprocessing.ColumnWranglerModule;
+import main.java.modules.ColWranglerModule.ColumnWranglerModule;
 
 import java.util.*;
 

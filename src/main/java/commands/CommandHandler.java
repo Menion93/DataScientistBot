@@ -38,6 +38,7 @@ public class CommandHandler {
         commandList.add(new ImportNewDatasetCommand(handler));
         commandList.add(new LoadDatasetCommand(handler));
         commandList.add(new RepeatCommand(handler));
+        commandList.add(new BackCommand(handler));
     }
 
     public List<Command> getCommandList(){

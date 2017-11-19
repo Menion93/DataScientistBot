@@ -153,4 +153,14 @@ public class JGTModule extends Module {
         this.stepIndex = prevStep;
         return reply(prevUserInput);
     }
+
+    @Override
+    public List<String> back() {
+        return null;
+    }
+
+    @Override
+    public List<String> onModuleLoad() {
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-package main.java.modules.preprocessing;
+package main.java.modules.ColWranglerModule;
 
 import main.java.dataset.Dataset;
 import main.java.thirdParty.LFEnets.transformation.Transformations;

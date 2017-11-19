@@ -1,8 +1,7 @@
 package main.java.core;
 
 import main.java.ModuleSubscription;
-import main.java.modules.ContextModule.ContextModule;
-import main.java.modules.ModuleSelection;
+import main.java.modules.defaultModules.SelectionModule.SelectionModule;
 import main.java.recommending.RecomSubscription;
 import main.java.session.Session;
 import main.java.database.DBRepository;
@@ -19,26 +18,24 @@ public class DataScienceModuleHandler {
 
     private DBRepository repository;
     private Module currentModule;
-    private ContextModule contextModule;
-    private ModuleSelection selectionModule;
+    private SelectionModule selectionModule;
     private ModuleSubscription subscriptions;
     private RecomSubscription recommendations;
     private Command currentIntent;
     private Session session;
     private boolean sayingGoodbye;
-    private boolean switchedToDefault;
+    private boolean justLoaded;
     private CommandHandler commandHandler;
 
     public DataScienceModuleHandler(DBRepository repository){
         commandHandler = new CommandHandler(this);
-        selectionModule = new ModuleSelection(this, commandHandler);
+        selectionModule = new SelectionModule(this, commandHandler);
         currentModule = selectionModule;
         subscriptions = new ModuleSubscription(this);
         recommendations = new RecomSubscription();
-        contextModule = new ContextModule(this);
         this.session = new Session(repository, this);
         this.repository = repository;
-
+        this.justLoaded = true;
         repository.setSession(session);
     }
 
@@ -74,14 +71,13 @@ public class DataScienceModuleHandler {
         }
 
         // If no special command is given, continue with the normal workflow
-        List<String> moduleReplies = new LinkedList<>();
-        replies.addAll(currentModule.reply(userInput));
 
-        // If you are exiting a module, add another message from the selection module
-        if(switchedToDefault){
-            replies.addAll(currentModule.reply(""));
-            switchedToDefault = false;
+        if(justLoaded){
+            replies.addAll(currentModule.onModuleLoad());
+            justLoaded = false;
         }
+        else
+            replies.addAll(currentModule.reply(userInput));
 
         session.logMessages(replies, false);
         return replies;
@@ -92,26 +88,19 @@ public class DataScienceModuleHandler {
     }
 
     public void setCurrentModule(Module currentModule) {
+        justLoaded = true;
         this.currentModule = currentModule;
         this.selectionModule.setPipelineStep(currentModule.getModuleStep());
     }
 
     public void switchToDefaultModule() {
-        if(!currentModule.equals(selectionModule))
-            switchedToDefault = true;
-
+        currentModule.resetConversation();
         currentModule = selectionModule;
     }
 
-    public void switchToDefaultModule(boolean addDefaultMessage) {
-        if(!currentModule.equals(selectionModule))
-            switchedToDefault = addDefaultMessage;
-
-        currentModule = selectionModule;
-    }
 
     public List<String> getTags(){
-        return contextModule.getContext();
+        return selectionModule.getContext();
     }
 
     public void continueHandlerDiscussion(Command intent){ this.currentIntent = intent;}
@@ -127,17 +116,10 @@ public class DataScienceModuleHandler {
     public DBRepository getRepository() { return repository; }
     public ModuleSubscription getModuleSubscription(){ return subscriptions; }
     public Session getSession(){return this.session;}
-    public void switchContextModule() {
-        this.currentModule = contextModule;
-    }
-    public RecomSubscription getRecommendations() {
-        return recommendations;
-    }
-    public ContextModule getContextModule() {
-        return contextModule;
-    }
-    public ModuleSelection getSelectionModule() {
+    public SelectionModule getSelectionModule() {
         return selectionModule;
     }
-
+    public void setJustLoaded(boolean justLoaded) {
+        this.justLoaded = justLoaded;
+    }
 }

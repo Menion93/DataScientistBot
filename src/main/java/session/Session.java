@@ -1,12 +1,8 @@
 package main.java.session;
 
-import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.dataset.Dataset;
 import main.java.database.DBRepository;
-import main.java.modules.ContextModule.ContextModule;
-import main.java.modules.Module;
-import main.java.modules.ModuleSelection;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +55,7 @@ public class Session {
 
     public void saveSessionInfo(){
         saveSessionWithoutTags();
-        repository.registerSession(handler.getContextModule().getContext());
+        repository.registerSession(handler.getSelectionModule().getContext());
     }
 
     public void saveCurrentInstance(){

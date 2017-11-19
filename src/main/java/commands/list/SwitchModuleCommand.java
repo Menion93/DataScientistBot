@@ -5,6 +5,7 @@ import main.java.commands.Command;
 import main.java.modules.Module;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -48,7 +49,11 @@ public class SwitchModuleCommand extends Command {
         if(newModule != null){
             handler.getCurrentModule().resetConversation();
             handler.setCurrentModule(handler.getModuleSubscription().getModuleByName(moduleName));
-            return Arrays.asList("Switched to module " + newModule.getModuleName() + "\n" + newModule.reply(""));
+            handler.setJustLoaded(false);
+            LinkedList<String> replies = new LinkedList<>();
+            replies.add("Switched to module " + newModule.getModuleName());
+            replies.addAll(newModule.onModuleLoad());
+            return replies;
         }
 
         return Arrays.asList("Module name not recognized");

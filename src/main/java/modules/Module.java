@@ -36,6 +36,7 @@ public abstract class Module {
         return getModuleName() != null ? getModuleName().hashCode() : 0;
     }
 
+    public DataScienceModuleHandler getModuleHandler(){ return handler; }
     public String selectRandomSentence(String[] sentences){
         return Helper.selectRandomString(sentences);
     }
@@ -52,6 +53,6 @@ public abstract class Module {
     public abstract void resetModuleInstance();
     public abstract void resetConversation();
     public abstract List<String> repeat();
-
-
+    public abstract List<String> back();
+    public abstract List<String> onModuleLoad();
 }

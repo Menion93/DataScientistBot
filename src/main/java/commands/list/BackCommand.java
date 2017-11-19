@@ -6,13 +6,13 @@ import main.java.core.DataScienceModuleHandler;
 import java.util.List;
 
 /**
- * Created by Andrea on 16/10/2017.
+ * Created by Andrea on 16/11/2017.
  */
-public class ExitModuleCommand extends Command {
+public class BackCommand extends Command {
 
-    private String[] KEYWORDS = {"!exit module"};
+    private String[] KEYWORDS = {"!back"};
 
-    public ExitModuleCommand(DataScienceModuleHandler handler) {
+    public BackCommand(DataScienceModuleHandler handler) {
         super(handler);
     }
 
@@ -23,13 +23,11 @@ public class ExitModuleCommand extends Command {
 
     @Override
     public String getBasicCommand() {
-        return "!exit module";
+        return "!back";
     }
 
     @Override
     public List<String> handleCommand() {
-        handler.getCurrentModule().resetConversation();
-        handler.switchToDefaultModule();
-        return handler.getCurrentModule().reply("");
+        return handler.getCurrentModule().back();
     }
 }
