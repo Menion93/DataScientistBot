@@ -4,6 +4,7 @@ import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
+import main.java.modules.conversational.ConvMachine;
 import main.java.utils.Helper;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,91 +16,30 @@ import java.util.*;
  */
 public class SchemaAutocompleteModule extends Module {
 
-    private enum STEPS {INSTRUCTIONS, SCHEMA_INPUT, ANOTHER_SCHEMA};
-    private int stepIndex;
-    private Map<String, Map<String,Double>> allAnalysis;
-    private SACTMapper sactool;
-    private String prevUserInput;
-    private int prevStep;
-
-    private String[] intro = {"Write the name of some attributes you are interested in, I will look the attributes",
-                               "Write a partial schema like <party president>, I will search for you the next attribute"};
+    private Map<String, Map<String,Double>> context2Recommendation;
+    private String resultString;
+    private ConvMachine stateMachine;
 
     public SchemaAutocompleteModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "SchemaAutocomplete", step);
-        allAnalysis = new HashMap<>();
-        sactool = new SACTMapper();
+        context2Recommendation = new HashMap<>();
     }
 
     @Override
     public List<String> reply(String userInput) {
-        prevUserInput = userInput;
-        prevStep = stepIndex;
-
-        STEPS currentStep = STEPS.values()[stepIndex];
-
-        switch (currentStep){
-
-            case INSTRUCTIONS: {
-                stepIndex++;
-                return Arrays.asList(selectRandomSentence(intro));
-            }
-            case SCHEMA_INPUT: {
-                List<String> schema = extractSchema(userInput);
-
-                if(schema != null){
-                    String orderedSchema = Helper.getLexicographicalOrder(schema);
-                    Map<String,Double> singleAnalysis = allAnalysis.get(orderedSchema);
-                    String result;
-                    if(singleAnalysis == null){
-                        Map<String,Double> anResult = sactool.getTopKProbabileAttributes(schema, 10);
-                        allAnalysis.put(orderedSchema, anResult);
-                        result = printResult(anResult);
-                    }
-                    else{
-                        result = printResult(singleAnalysis);
-                    }
-                    List<String> replies = new LinkedList<>();
-                    replies.add(result);
-                    replies.add("Would you like to search for another schema?");
-                    stepIndex++;
-                    return replies;
-                }
-                return Arrays.asList("I could not read your schema, can you write it again?");
-
-            }
-            case ANOTHER_SCHEMA: {
-                if(userInput.contains("yes")){
-                    stepIndex -= 2;
-                    return this.reply(null);
-                }
-                else{
-                    stepIndex = 0;
-                    handler.switchToDefaultModule();
-                    return Arrays.asList("Module exited");
-                }
-            }
-            default:
-                return Arrays.asList("Can you repeat please?");
-        }
-
+        return stateMachine.reply(userInput);
     }
 
-    private String printResult(Map<String, Double> probabileAttribute) {
-        StringBuilder sb = new StringBuilder();
-
-        for(Map.Entry<String,Double> entry : probabileAttribute.entrySet()){
-            sb.append(entry.getKey());
-            sb.append("\t");
-            sb.append(entry.getValue());
-            sb.append("\n");
-        }
-
-        return sb.toString();
+    public Map<String, Map<String, Double>> getContext2Recommendation() {
+        return context2Recommendation;
     }
 
-    private List<String> extractSchema(String userInput) {
-        return Arrays.asList(userInput.split(" "));
+    public String getResultString() {
+        return resultString;
+    }
+
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
     }
 
     @Override
@@ -110,7 +50,7 @@ public class SchemaAutocompleteModule extends Module {
 
     @Override
     public String getModuleUsage() {
-        return null;
+        return "Write a set of attribute separated by a schema";
     }
 
     @Override
@@ -121,41 +61,50 @@ public class SchemaAutocompleteModule extends Module {
     @Override
     public void loadModuleInstance() {
         DBRepository repo = handler.getRepository();
-        allAnalysis = repo.getSchemaAutocompleteAnalysis();
+        context2Recommendation = repo.getSchemaAutocompleteAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
-        if(!allAnalysis.isEmpty()){
+        if(!context2Recommendation.isEmpty()){
             DBRepository repo = handler.getRepository();
-            repo.saveSchemaAutocompleteAnalysis(allAnalysis);
+            repo.saveSchemaAutocompleteAnalysis(context2Recommendation);
         }
     }
 
     @Override
     public void resetModuleInstance() {
-        allAnalysis = new HashMap<>();
-        stepIndex = 0;
+        if(stateMachine == null){
+            SACConvMachineFactory factory = new SACConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
+        context2Recommendation = new HashMap<>();
+        this.resetConversation();
     }
 
     @Override
     public void resetConversation() {
-        stepIndex = 0;
+        stateMachine.resetConversation();
     }
 
     @Override
     public List<String> repeat() {
-        this.stepIndex = prevStep;
-        return reply(prevUserInput);
+        return stateMachine.repeat();
     }
 
     @Override
     public List<String> back() {
-        return null;
+        return stateMachine.repeat();
     }
 
     @Override
     public List<String> onModuleLoad() {
-        return null;
+        if(stateMachine == null){
+            SACConvMachineFactory factory = new SACConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
+        return stateMachine.showCurrentStateText();
     }
 }

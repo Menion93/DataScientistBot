@@ -5,6 +5,7 @@ import main.java.dataset.Dataset;
 import main.java.modules.ColWranglerModule.ColumnWranglerModule;
 import main.java.modules.conversational.ConvNode;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Andrea on 18/11/2017.
@@ -12,6 +13,9 @@ import java.util.Arrays;
 public class CWModuleDatasetSelectionNode extends ConvNode {
 
     private ColumnWranglerModule module;
+
+    private List<String> errorMessage1 = Arrays.asList("You must add a dataset to the pool first!",
+            "Type \"!import dataset\" to add a new dataset first, or exit the module typing \"!exit module\"");
 
     public CWModuleDatasetSelectionNode(String nodeId, ColumnWranglerModule module) {
         super(nodeId);
@@ -22,8 +26,11 @@ public class CWModuleDatasetSelectionNode extends ConvNode {
     public void onLoad() {
         String dsList = module.getModuleHandler().getSession().printDatasetList();
 
-        onLoadMessages = Arrays.asList("Welcome to the ColumnWrangler module, here you can make transformations to " +
-                "the column of your dataset", "Select the dataset you want to work with", dsList);
+        if(dsList.equals(""))
+            onLoadMessages = errorMessage1;
+        else
+            onLoadMessages = Arrays.asList("Welcome to the ColumnWrangler module, here you can make transformations to " +
+                    "the column of your dataset", "Select the dataset you want to work with", dsList);
 
     }
 

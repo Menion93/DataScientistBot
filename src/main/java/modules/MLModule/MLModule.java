@@ -5,6 +5,9 @@ import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
 import main.java.modules.Module;
+import main.java.modules.conversational.ConvMachine;
+import org.apache.commons.lang3.mutable.MutableDouble;
+
 import java.util.*;
 
 /**
@@ -12,126 +15,59 @@ import java.util.*;
  */
 public class MLModule extends Module {
 
-    private enum STEPS {INSTRUCTION, DATASET_SELECTION, TARGET_SELECTION, MODEL_SELECTION, EVALUATION_SELECTION, RUN_MORE};
-    private int stepIndex;
-    private List<Evaluation> ds2model;
+    private List<Evaluation> evaluations;
     private Dataset currentDataset;
     private String currentTarget;
     private Model currentModel;
+    private Evaluation currentEval;
     private MachineAlgorithms models = new MachineAlgorithms();
-    private String prevUserInput;
-    private int prevStep;
+    private ConvMachine stateMachine;
+
 
     public MLModule(DataScienceModuleHandler handler, ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "MLAlgorithms",step);
-        ds2model = new LinkedList<>();
+        evaluations = new LinkedList<>();
         models = new MachineAlgorithms();
     }
 
     @Override
     public List<String> reply(String userInput) {
-        prevUserInput = userInput;
-        prevStep = stepIndex;
-
-        if(handler.getSession().getDatasetPool().size() == 0)
-            return Arrays.asList("You have to add a dataset in the pool first!",
-                    "Type \"!import dataset\" to add a new dataset first, or exit the module typing \"!exit module\"");
-
-        STEPS currentStep = STEPS.values()[stepIndex];
-
-        switch (currentStep){
-
-            case INSTRUCTION: {
-                stepIndex++;
-                List<String> replies = new LinkedList<>();
-                replies.add("Choose the dataset you want to try the analysis");
-                replies.add(handler.getSession().printDatasetList());
-                return replies;
-            }
-            case DATASET_SELECTION: {
-                // Extract and validate the name,
-                String currentDatasetName = extractAndValidateDatasetName(userInput);
-
-                if(currentDatasetName != null){
-                    stepIndex++;
-                    return Arrays.asList("Now specify the target class");
-                }
-                return Arrays.asList("I could not found the dataset, can you rewrite it?");
-            }
-            case TARGET_SELECTION: {
-                currentTarget = extractAndValidateTarget(userInput);
-
-                if(currentTarget != null){
-                    stepIndex++;
-                    return Arrays.asList("Now select an algorithm to fit please", models.toString());
-                }
-                return Arrays.asList("The target is not valid");
-
-            }
-            case MODEL_SELECTION: {
-                String modelSelected = userInput;
-                if(models.modelExist(modelSelected)){
-                    currentModel = models.getModel(modelSelected);
-                    stepIndex++;
-                    return Arrays.asList("Now please select an evaluation method",
-                            printEvaluationOptions(currentModel.getEvaluationList()));
-                }
-                return Arrays.asList("Model selected not found");
-            }
-            case EVALUATION_SELECTION: {
-                String evaluation = userInput;
-                if(currentModel.hasEvaluation(evaluation)){
-                    stepIndex++;
-                    Evaluation eval = currentModel.evaluateModel(evaluation, currentDataset, currentTarget);
-                    ds2model.add(eval);
-                    return Arrays.asList(eval.printEvaluation(), "Do you want to run another model?");
-                }
-                return Arrays.asList("Evaluation with name" + evaluation + " is not valid",
-                        "Please select another name");
-            }
-            case RUN_MORE: {
-                if(userInput.contains("yes")){
-                    stepIndex -=2;
-                    return this.reply(currentTarget);
-                }
-                this.resetConversation();
-                handler.switchToDefaultModule();
-                return this.reply(null);
-            }
-
-            default:
-                return Arrays.asList("Can you repeat please?");
-        }
+      return stateMachine.reply(userInput);
     }
 
-    private String printEvaluationOptions(List<String> evaluationList) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Evaluations:");
-
-        for(String clf : evaluationList){
-            sb.append("\n\t");
-            sb.append(clf);
-        }
-        return sb.toString();
+    public Evaluation getCurrentEval() {
+        return currentEval;
     }
 
-    private String extractAndValidateTarget(String userInput) {
-        Map<String, List<Double>> numericalAtt = currentDataset.getNumericalAttributes();
-        Map<String, List<String>> categoricalAtt = currentDataset.getCategoricalAttributes();
-
-        if(numericalAtt.containsKey(userInput) || categoricalAtt.containsKey(userInput))
-            return userInput;
-        else
-            return null;
+    public void setCurrentEvaluation(Evaluation currentEval) {
+        this.currentEval = currentEval;
+    }
+    public void setCurrentDataset(Dataset currentDataset) {
+        this.currentDataset = currentDataset;
     }
 
-    private String extractAndValidateDatasetName(String userInput) {
-        currentDataset = handler.getSession().getDatasetByName(userInput);
+    public void setCurrentModel(Model currentModel) {
+        this.currentModel = currentModel;
+    }
 
-        if(currentDataset != null)
-            return currentDataset.getDatasetName();
+    public Dataset getCurrentDataset(){
+        return this.currentDataset;
+    }
 
-        return null;
+    public Model getCurrentModel() {
+        return currentModel;
+    }
+
+    public String getCurrentTarget() {
+        return currentTarget;
+    }
+
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+
+    public void setCurrentTarget(String currentTarget) {
+        this.currentTarget = currentTarget;
     }
 
     @Override
@@ -154,40 +90,54 @@ public class MLModule extends Module {
     @Override
     public void loadModuleInstance() {
         DBRepository repo = handler.getRepository();
-        ds2model = repo.getMLModuleAnalysis();
+        evaluations = repo.getMLModuleAnalysis();
+    }
+
+    public MachineAlgorithms getModels(){
+        return models;
     }
 
     @Override
     public void saveModuleInstance() {
-        if(!ds2model.isEmpty()){
+        if(!evaluations.isEmpty()){
             DBRepository repo = handler.getRepository();
-            repo.saveMLModuleAnalysis(ds2model);
+            repo.saveMLModuleAnalysis(evaluations);
         }
     }
 
     @Override
     public void resetModuleInstance() {
-        this.stepIndex = 0;
+        if(stateMachine == null){
+            MLConvMachineFactory factory = new MLConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
+        evaluations = new LinkedList<>();
+        resetConversation();
     }
 
     @Override
     public void resetConversation() {
-        stepIndex = 0;
+        stateMachine.resetConversation();
     }
 
     @Override
     public List<String> repeat() {
-        this.stepIndex = prevStep;
-        return reply(prevUserInput);
+        return stateMachine.repeat();
     }
 
     @Override
     public List<String> back() {
-        return null;
+        return stateMachine.back();
     }
 
     @Override
-    public List<String> onModuleLoad() {
-        return null;
+    public List<String> onModuleLoad(){
+        if(stateMachine == null){
+            MLConvMachineFactory factory = new MLConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
+        return stateMachine.showCurrentStateText();
     }
 }

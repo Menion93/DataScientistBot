@@ -56,6 +56,7 @@ public class ConvMachine {
     }
 
     public List<String> showCurrentStateText(){
+        this.current.onLoad();
         return this.current.onLoadMessages;
     }
 

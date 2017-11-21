@@ -98,7 +98,13 @@ public class ColumnWranglerModule extends Module {
 
     @Override
     public void resetModuleInstance() {
+        if(stateMachine == null){
+            CWConvMachineFactory factory = new CWConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
 
+        ds2transf = new HashMap<>();
+        resetConversation();
     }
 
     @Override

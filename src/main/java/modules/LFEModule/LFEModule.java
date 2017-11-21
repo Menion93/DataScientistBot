@@ -5,6 +5,7 @@ import main.java.dataset.Dataset;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
+import main.java.modules.conversational.ConvMachine;
 
 import java.util.*;
 import java.util.List;
@@ -14,110 +15,32 @@ import java.util.List;
  */
 public class LFEModule extends Module {
 
-    private enum STEPS {PRINT_DATASET, SELECT_DATASET, SELECT_TARGET, CONFIRM_TRANSFORMATION};
     private Map<String, Map<Integer, String>> dataset2transfor;
-    private int stepIndex;
-    private String currentDatasetName;
     private Dataset currentDataset;
-    private Map<Integer, String> anResult;
-    private LFEMapper lfetool;
-    private String prevUserInput;
-    private int prevStep;
+    private String resultMessage;
+    private ConvMachine stateMachine;
 
 
     public LFEModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
         super(handler, "LFE", step);
         dataset2transfor = new HashMap<>();
-        lfetool = new LFEMapper();
     }
 
     @Override
     public List<String> reply(String userInput) {
-        prevUserInput = userInput;
-        prevStep = stepIndex;
-
-        if(handler.getSession().getDatasetPool().size() == 0)
-            return Arrays.asList("You have to add a dataset in the pool first!", "Type \"!import dataset\" to add a new dataset first, " +
-                    "or exit the module typing \"!exit module\"");
-
-        STEPS currentStep = STEPS.values()[stepIndex];
-
-        switch (currentStep){
-
-            case PRINT_DATASET: {
-                stepIndex++;
-                List<String> replies = new LinkedList<>();
-                replies.add("Choose the dataset you want to try the analysis");
-                replies.add(handler.getSession().printDatasetList());
-                return replies;
-            }
-            case SELECT_DATASET: {
-                // Extract and validate the name,
-                currentDatasetName = extractAndValidateDatasetName(userInput);
-
-                if(currentDatasetName != null){
-                    return Arrays.asList("Now specify the target class");
-                }
-                return Arrays.asList("I could not found the dataset, can you rewrite it?");
-            }
-            case SELECT_TARGET: {
-                String target = extractAndValidateTarget(userInput);
-
-                if(target != null){
-                    Map<Integer, String> analysis = dataset2transfor.get(currentDatasetName);
-                    String result;
-
-                    if(analysis == null){
-                        Dataset ds = handler.getSession().getDatasetByName(currentDatasetName);
-                        anResult = lfetool.getLFEAnalysis(ds, target);
-                        dataset2transfor.put(currentDatasetName, anResult);
-                        result =  printResult(anResult);
-                    }
-                    else{
-                        result = printResult(analysis);
-                    }
-
-                    this.resetConversation();
-                    handler.switchToDefaultModule();
-                    return Arrays.asList(result);
-                }
-                return Arrays.asList("The target is not valid");
-            }
-
-            default:
-                return Arrays.asList("Can you repeat please?");
-        }
+        return stateMachine.reply(userInput);
     }
 
-    private String extractAndValidateTarget(String userInput) {
-        Map<String, List<Double>> numericalAtt = currentDataset.getNumericalAttributes();
-
-        if(numericalAtt.containsKey(userInput))
-            return userInput;
-
-        return null;
+    public void setCurrentDataset(Dataset currentDataset) {
+        this.currentDataset = currentDataset;
     }
 
-    private String printResult(Map<Integer, String> lfeAnalysis) {
-
-        StringBuilder sb = new StringBuilder();
-
-        for(Map.Entry entry : lfeAnalysis.entrySet()){
-            sb.append(entry.getKey());
-            sb.append("\t");
-            sb.append(entry.getValue());
-        }
-
-        return sb.toString();
+    public Dataset getCurrentDataset() {
+        return currentDataset;
     }
 
-    private String extractAndValidateDatasetName(String userInput) {
-        currentDataset = handler.getSession().getDatasetByName(userInput);
-
-        if(currentDataset != null)
-            return currentDataset.getDatasetName();
-
-        return null;
+    public Map<String, Map<Integer, String>> getDataset2transfor() {
+        return dataset2transfor;
     }
 
 
@@ -150,30 +73,50 @@ public class LFEModule extends Module {
         }
     }
 
+    public void setResultMessage(String result) {
+        this.resultMessage = result;
+    }
+
+    public String getResultMessage() {
+        return resultMessage;
+    }
+
+
     @Override
     public void resetModuleInstance() {
+        if(stateMachine == null){
+            LFEConvMachineFactory factory = new LFEConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
         Map<String, Map<Integer, String>> dataset2transfor = new HashMap<>();
-        stepIndex = 0;
+        resetConversation();
     }
 
     @Override
     public void resetConversation() {
-        stepIndex = 0;
+        stateMachine.resetConversation();
     }
 
     @Override
     public List<String> repeat() {
-        this.stepIndex = prevStep;
-        return reply(prevUserInput);
+        return stateMachine.repeat();
     }
 
     @Override
     public List<String> back() {
-        return null;
+        return stateMachine.back();
     }
 
     @Override
     public List<String> onModuleLoad() {
-        return null;
+
+        if(stateMachine == null){
+            LFEConvMachineFactory factory = new LFEConvMachineFactory(this);
+            stateMachine = factory.getConversationalMachine();
+        }
+
+        return stateMachine.showCurrentStateText();
     }
+
 }
