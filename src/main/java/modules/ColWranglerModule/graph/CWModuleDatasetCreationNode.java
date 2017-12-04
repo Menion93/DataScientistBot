@@ -1,8 +1,10 @@
 package main.java.modules.ColWranglerModule.graph;
 
+import main.java.ModuleSubscription;
 import main.java.dataset.Dataset;
 import main.java.modules.ColWranglerModule.ColumnWranglerModule;
 import main.java.modules.conversational.ConvNode;
+import main.java.session.Session;
 
 import java.util.*;
 
@@ -27,10 +29,14 @@ public class CWModuleDatasetCreationNode extends ConvNode {
     @Override
     public ConvNode chooseSuccessor(String userInput) {
 
-        if (alreadyExist(userInput)) {
+        // Needed to check the datasets that are not saved permanently yet
+        Session session =  module.getModuleHandler().getSession();
+
+        if (alreadyExist(userInput) || session.getDatasetByName(userInput) != null) {
             errorMessage = Arrays.asList("Name is not valid, please try again");
             return this;
         }
+
         Dataset newDataset = module.getNewDataset();
         newDataset.setDatasetName(userInput);
         module.getModuleHandler().getSession().getDatasetPool().add(newDataset);

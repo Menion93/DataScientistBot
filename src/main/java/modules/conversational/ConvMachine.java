@@ -1,7 +1,6 @@
 package main.java.modules.conversational;
 
 import main.java.core.DataScienceModuleHandler;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +51,7 @@ public class ConvMachine {
         if(current.prev == null)
             return this.current.onLoadMessages;
         this.current = this.current.prev;
+        this.current.onLoad();
         return current.onLoadMessages;
     }
 

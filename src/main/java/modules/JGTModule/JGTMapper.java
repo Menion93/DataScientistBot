@@ -13,7 +13,7 @@ public class JGTMapper {
 	
 	public JGTMapper(){}
 	
-	public Map<String, List<List<String>>> getKRankings(List<String> schema){
+	public Set<List<String>> getKRankings(List<String> schema){
 		
 		AcsdbToolsManager manager = null;
 		try {
@@ -33,15 +33,12 @@ public class JGTMapper {
 		}
 		
 		
-        Map<String, List<List<String>>> mappedResult = new HashMap<>();
+        Set<List<String>> mappedResult = new HashSet<>();
         
         for(Map.Entry<String,TreeSet<PointComparable>> entry : result.entrySet()){
-        	List<List<String>> clusterGroup = new LinkedList<>();
-        
-        	for(PointComparable pc : entry.getValue()){
-        		clusterGroup.add(pc.getPoint().getSchema().toList());
+	       	for(PointComparable pc : entry.getValue()){
+        		mappedResult.add(pc.getPoint().getSchema().toList());
         	}
-        	mappedResult.put(entry.getKey(), clusterGroup);
         }
 
        

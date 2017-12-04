@@ -4,9 +4,7 @@ import main.java.modules.SchemaAutocompleteModule.SACTMapper;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
 import main.java.modules.conversational.ConvNode;
 import main.java.utils.Helper;
-
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +15,8 @@ public class SACModuleSchemaInputNode extends ConvNode{
 
     private SchemaAutocompleteModule module;
 
-    private String[] intro = {"Write the name of some attributes you are interested in, I will look the attributes",
-            "Write a partial schema like <party president>, I will search for you the next attribute"};
+    private String[] intro = {"Write the name of some attributes you are interested in separated by \"-\", I will look the attributes",
+            "Write a partial schema like <party-president>, I will search for you the next attribute"};
 
     public SACModuleSchemaInputNode(String nodeId, SchemaAutocompleteModule module) {
         super(nodeId);
@@ -45,6 +43,7 @@ public class SACModuleSchemaInputNode extends ConvNode{
         String orderedSchema = Helper.getLexicographicalOrder(schema);
         Map<String,Double> singleAnalysis = context2Recommendation.get(orderedSchema);
         String result;
+
         if(singleAnalysis == null){
             Map<String,Double> anResult = sactool.getTopKProbabileAttributes(schema, 10);
             context2Recommendation.put(orderedSchema, anResult);
@@ -60,7 +59,7 @@ public class SACModuleSchemaInputNode extends ConvNode{
     }
 
     private List<String> extractSchema(String userInput) {
-        return Arrays.asList(userInput.split(" "));
+        return Arrays.asList(userInput.split("-"));
     }
 
     private String printResult(Map<String, Double> probabileAttribute) {

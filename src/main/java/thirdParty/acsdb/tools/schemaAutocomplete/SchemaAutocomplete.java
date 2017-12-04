@@ -27,7 +27,7 @@ public class SchemaAutocomplete{
         System.out.println(totalCount);
 
         for(Map.Entry<String,AcsdbValue> entry : contextSchemas.entrySet()){
-            parseLine(word2Count ,entry.getKey(), entry.getValue().getTrueHeader(), schema);
+            parseLine(word2Count, entry.getKey(), entry.getValue().getTrueHeader(), schema);
             totalCount += entry.getValue().getTrueHeader();
         }
 

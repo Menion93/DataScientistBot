@@ -16,7 +16,8 @@ public class ModuleSubscription {
 
     private DataScienceModuleHandler handler;
 
-    public enum PIPELINE_STEPS  {DATASET_SEARCH, DATA_INTEGRATION, FEATURE_ENGINEERING, MODEL_SELECTION, TRAINING_EVAL};
+
+    public enum PIPELINE_STEPS  {DATASET_SEARCH, DATA_CLEANING , DATA_INTEGRATION, FEATURE_ENGINEERING, LEARNING};
 
     HashMap<PIPELINE_STEPS, List<Module>> subscriptions;
 
@@ -32,15 +33,17 @@ public class ModuleSubscription {
         datasetResearchModules.add(new SchemaAutocompleteModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
         datasetResearchModules.add(new JGTModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
 
-        List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
-        dataIntegrationModules.add(new ColumnWranglerModule(handler, PIPELINE_STEPS.DATA_INTEGRATION));
+        List<Module> dataCleaningModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
+        dataCleaningModules.add(new ColumnWranglerModule(handler, PIPELINE_STEPS.DATA_INTEGRATION));
+
+        //List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
 
         //List<Module> featureEngineeringModules = subscriptions.get(PIPELINE_STEPS.FEATURE_ENGINEERING);
         //featureEngineeringModules.add(new LFEModule(handler, PIPELINE_STEPS.FEATURE_ENGINEERING));
 
-        List<Module> modelSelectionModules = subscriptions.get(PIPELINE_STEPS.MODEL_SELECTION);
-        List<Module> trainingEvalModules = subscriptions.get(PIPELINE_STEPS.TRAINING_EVAL);
-        trainingEvalModules.add(new MLModule(handler, PIPELINE_STEPS.TRAINING_EVAL));
+
+        List<Module> trainingEvalModules = subscriptions.get(PIPELINE_STEPS.LEARNING);
+        trainingEvalModules.add(new MLModule(handler, PIPELINE_STEPS.LEARNING));
 
     }
 

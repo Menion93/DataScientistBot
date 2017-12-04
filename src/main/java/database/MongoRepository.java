@@ -42,7 +42,7 @@ public class MongoRepository extends DBRepository {
     }
 
     @Override
-    public void saveJGTAnalysis(Map<String,Map<String, List<List<String>>>> goodAnalysis) {
+    public void saveJGTAnalysis(Map<String,Set<List<String>>> goodAnalysis) {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
 
@@ -50,7 +50,7 @@ public class MongoRepository extends DBRepository {
         JGTcoll.deleteMany(new Document("sessionName", sessionName).append("branchName", branchName));
         JGTcoll.insertOne(new Document("sessionName", sessionName)
                                 .append("branchName",branchName)
-                                .append("map", goodAnalysis)
+                                .append("set", goodAnalysis)
         );
     }
 
@@ -68,7 +68,7 @@ public class MongoRepository extends DBRepository {
     }
 
     @Override
-    public Map<String,Map<String, List<List<String>>>> getJGTAnalysis() {
+    public Map<String,Set<List<String>>> getJGTAnalysis() {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);
@@ -77,10 +77,10 @@ public class MongoRepository extends DBRepository {
 
         if(result == null){
             System.out.println("JGTData not found");
-            return new HashMap<String,Map<String, List<List<String>>>>();
+            return new HashMap<>();
         }
 
-        return (Map<String,Map<String, List<List<String>>>>) result.get("map");
+        return (Map<String,Set<List<String>>>) result.get("map");
     }
 
     @Override

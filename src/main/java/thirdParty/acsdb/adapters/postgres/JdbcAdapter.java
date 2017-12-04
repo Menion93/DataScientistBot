@@ -154,6 +154,8 @@ public class JdbcAdapter extends DBAdapter {
 
         ResultSet rs = executeQuery(sb.toString());
 
+        commonAttrCache = new HashMap<>();
+
         while(rs.next()){
             commonAttrCache.put(rs.getString("schema"),
                     new AcsdbValue(rs.getInt("true_header"),

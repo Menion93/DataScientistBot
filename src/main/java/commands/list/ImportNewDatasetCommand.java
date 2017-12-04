@@ -34,12 +34,18 @@ public class ImportNewDatasetCommand extends Command {
                 // Extract and validate the name,
                 String path = userInput;
                 newDataset = new Dataset(handler.getRepository());
-                if(newDataset.loadFromFS(path)){
-                    stepIndex++;
-                    newDataset.setPath(path);
-                    return Arrays.asList("Dataset loaded with success", "Now please choose a name for the new dataset");
+                try{
+                    if(newDataset.loadFromFS(path)){
+                        stepIndex++;
+                        newDataset.setPath(path);
+                        return Arrays.asList("Dataset loaded with success", "Now please choose a name for the new dataset");
+                    }
+                }catch(Exception e){
+
                 }
-                return Arrays.asList("I could not found the dataset at the path specified, can you write it again?");
+                stepIndex = 0;
+                finishedTalking = true;
+                return Arrays.asList("I could not found the dataset at the path specified");
             }
             case ADD_NAME: {
                 String name = userInput;

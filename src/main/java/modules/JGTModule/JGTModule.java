@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class JGTModule extends Module {
 
-    private Map<String,Map<String, List<List<String>>>> allAnalysis;
+    private Map<String, Set<List<String>>> allAnalysis;
     private List<String> resultString;
     private ConvMachine stateMachine;
 
@@ -67,7 +67,7 @@ public class JGTModule extends Module {
         }
     }
 
-    public Map<String, Map<String, List<List<String>>>> getAllAnalysis() {
+    public Map<String, Set<List<String>>> getAllAnalysis() {
         return allAnalysis;
     }
 

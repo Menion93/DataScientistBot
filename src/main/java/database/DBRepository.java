@@ -7,6 +7,7 @@ import main.java.session.Session;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Andrea on 12/10/2017.
@@ -21,9 +22,9 @@ public abstract class DBRepository {
         this.session = session;
     }
     public abstract void saveMessage(List<MessageEntry> conversation);
-    public abstract void saveJGTAnalysis(Map<String,Map<String, List<List<String>>>> goodAnalysis);
+    public abstract void saveJGTAnalysis(Map<String,Set<List<String>>> goodAnalysis);
     public abstract void saveLFEAnalysis(Map<String, Map<Integer, String>> dataset2transf);
-    public abstract Map<String, Map<String,List<List<String>>>> getJGTAnalysis();
+    public abstract Map<String, Set<List<String>>> getJGTAnalysis();
     public abstract Map<String,Map<Integer,String>> getLFEAnalysis();
     public abstract boolean isAValidBranch(String branchName);
     public abstract List<MessageEntry> getConversation();
