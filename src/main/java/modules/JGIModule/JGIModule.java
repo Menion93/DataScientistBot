@@ -1,26 +1,25 @@
-package main.java.modules.JGTModule;
+package main.java.modules.JGIModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
 import main.java.modules.conversational.ConvMachine;
-import main.java.utils.Helper;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.*;
 
 /**
  * Created by Andrea on 07/10/2017.
  */
-public class JGTModule extends Module {
+public class JGIModule extends Module {
 
     private Map<String, Set<List<String>>> allAnalysis;
     private List<String> resultString;
     private ConvMachine stateMachine;
 
-    public JGTModule(DataScienceModuleHandler handler,  ModuleSubscription.PIPELINE_STEPS step) {
-        super(handler, "JGT", step);
+    public JGIModule(DataScienceModuleHandler handler, ModuleSubscription.PIPELINE_STEPS step) {
+        super(handler, "JoinGraphIntegrator", step);
         allAnalysis = new HashMap<>();
     }
 
@@ -56,14 +55,14 @@ public class JGTModule extends Module {
     @Override
     public void loadModuleInstance() {
         DBRepository repo = handler.getRepository();
-        allAnalysis = repo.getJGTAnalysis();
+        allAnalysis = repo.getJGIAnalysis();
     }
 
     @Override
     public void saveModuleInstance() {
         if(!allAnalysis.isEmpty()){
             DBRepository repo = handler.getRepository();
-            repo.saveJGTAnalysis(allAnalysis);
+            repo.saveJGIAnalysis(allAnalysis);
         }
     }
 
@@ -74,7 +73,7 @@ public class JGTModule extends Module {
     @Override
     public void resetModuleInstance() {
         if(stateMachine == null){
-            JGTConvMachineFactory factory = new JGTConvMachineFactory(this);
+            JGIConvMachineFactory factory = new JGIConvMachineFactory(this);
             stateMachine = factory.getConversationalMachine();
         }
 
@@ -100,7 +99,7 @@ public class JGTModule extends Module {
     @Override
     public List<String> onModuleLoad() {
         if(stateMachine == null){
-            JGTConvMachineFactory factory = new JGTConvMachineFactory(this);
+            JGIConvMachineFactory factory = new JGIConvMachineFactory(this);
             stateMachine = factory.getConversationalMachine();
         }
 

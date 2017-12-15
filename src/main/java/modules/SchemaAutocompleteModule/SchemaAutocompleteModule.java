@@ -1,13 +1,11 @@
 package main.java.modules.SchemaAutocompleteModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.modules.Module;
 import main.java.modules.conversational.ConvMachine;
-import main.java.utils.Helper;
-import java.util.Arrays;
-import java.util.LinkedList;
+
 import java.util.List;
 import java.util.*;
 

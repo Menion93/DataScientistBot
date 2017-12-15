@@ -1,6 +1,6 @@
 package main.java.modules.defaultModules.SelectionModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.commands.Command;
 import main.java.commands.CommandHandler;
 import main.java.core.DataScienceModuleHandler;

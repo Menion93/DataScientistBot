@@ -1,7 +1,7 @@
-package main.java;
+package main.java.modules;
 
 import main.java.core.DataScienceModuleHandler;
-import main.java.modules.JGTModule.JGTModule;
+import main.java.modules.JGIModule.JGIModule;
 import main.java.modules.MLModule.MLModule;
 import main.java.modules.Module;
 import main.java.modules.SchemaAutocompleteModule.SchemaAutocompleteModule;
@@ -31,10 +31,10 @@ public class ModuleSubscription {
         // Add dataset search modules here
         List<Module> datasetResearchModules = subscriptions.get(PIPELINE_STEPS.DATASET_SEARCH);
         datasetResearchModules.add(new SchemaAutocompleteModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
-        datasetResearchModules.add(new JGTModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
+        datasetResearchModules.add(new JGIModule(handler, PIPELINE_STEPS.DATASET_SEARCH));
 
-        List<Module> dataCleaningModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
-        dataCleaningModules.add(new ColumnWranglerModule(handler, PIPELINE_STEPS.DATA_INTEGRATION));
+        List<Module> dataCleaningModules = subscriptions.get(PIPELINE_STEPS.DATA_CLEANING);
+        dataCleaningModules.add(new ColumnWranglerModule(handler, PIPELINE_STEPS.DATA_CLEANING));
 
         //List<Module> dataIntegrationModules = subscriptions.get(PIPELINE_STEPS.DATA_INTEGRATION);
 

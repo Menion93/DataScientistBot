@@ -22,9 +22,9 @@ public abstract class DBRepository {
         this.session = session;
     }
     public abstract void saveMessage(List<MessageEntry> conversation);
-    public abstract void saveJGTAnalysis(Map<String,Set<List<String>>> goodAnalysis);
+    public abstract void saveJGIAnalysis(Map<String,Set<List<String>>> goodAnalysis);
     public abstract void saveLFEAnalysis(Map<String, Map<Integer, String>> dataset2transf);
-    public abstract Map<String, Set<List<String>>> getJGTAnalysis();
+    public abstract Map<String, Set<List<String>>> getJGIAnalysis();
     public abstract Map<String,Map<Integer,String>> getLFEAnalysis();
     public abstract boolean isAValidBranch(String branchName);
     public abstract List<MessageEntry> getConversation();

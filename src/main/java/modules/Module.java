@@ -1,13 +1,9 @@
 package main.java.modules;
 
-import main.java.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
-import main.java.database.DBRepository;
 import main.java.utils.Helper;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Andrea on 06/10/2017.

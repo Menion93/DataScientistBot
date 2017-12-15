@@ -1,6 +1,5 @@
 package main.java.modules.ColWranglerModule.graph;
 
-import main.java.ModuleSubscription;
 import main.java.dataset.Dataset;
 import main.java.modules.ColWranglerModule.ColumnWranglerModule;
 import main.java.modules.conversational.ConvNode;

@@ -1,6 +1,5 @@
 package main.java.modules.LFEModule.graph;
 
-import main.java.ModuleSubscription;
 import main.java.dataset.Dataset;
 import main.java.modules.LFEModule.LFEModule;
 import main.java.modules.conversational.ConvNode;

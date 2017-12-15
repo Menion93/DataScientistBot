@@ -1,6 +1,6 @@
 package main.java.modules.LFEModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.dataset.Dataset;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;

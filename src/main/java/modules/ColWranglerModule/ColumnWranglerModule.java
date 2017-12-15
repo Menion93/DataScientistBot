@@ -1,6 +1,6 @@
 package main.java.modules.ColWranglerModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;

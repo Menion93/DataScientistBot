@@ -22,7 +22,6 @@ public class MakeAnalysisCommand extends Command {
 
     public MakeAnalysisCommand(DataScienceModuleHandler handler) {
         super(handler);
-
     }
 
     @Override

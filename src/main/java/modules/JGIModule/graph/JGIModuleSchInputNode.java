@@ -1,7 +1,7 @@
-package main.java.modules.JGTModule.graph;
+package main.java.modules.JGIModule.graph;
 
-import main.java.modules.JGTModule.JGTMapper;
-import main.java.modules.JGTModule.JGTModule;
+import main.java.modules.JGIModule.JGIMapper;
+import main.java.modules.JGIModule.JGIModule;
 import main.java.modules.conversational.ConvNode;
 import main.java.utils.Helper;
 
@@ -10,14 +10,14 @@ import java.util.*;
 /**
  * Created by Andrea on 21/11/2017.
  */
-public class JGTModuleSchInputNode extends ConvNode {
+public class JGIModuleSchInputNode extends ConvNode {
 
-    private JGTModule module;
+    private JGIModule module;
 
     private String[] intro = {"Write the name of some attributes you are interested in separated by \"-\", I will search for similar datasets",
             "Write relevant attributes separated by \"-\", I will look for interesting schemas for you"};
 
-    public JGTModuleSchInputNode(String nodeId, JGTModule module) {
+    public JGIModuleSchInputNode(String nodeId, JGIModule module) {
         super(nodeId);
         this.module = module;
     }
@@ -43,7 +43,7 @@ public class JGTModuleSchInputNode extends ConvNode {
         String result;
 
         if(analysis == null){
-            JGTMapper jgtool = new JGTMapper();
+            JGIMapper jgtool = new JGIMapper();
             Set<List<String>> anResult = jgtool.getKRankings(schemas);
 
             if(anResult == null){

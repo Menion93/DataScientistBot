@@ -1,6 +1,6 @@
 package main.java.recommending;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.RecommendRepository;
 import main.java.modules.Module;

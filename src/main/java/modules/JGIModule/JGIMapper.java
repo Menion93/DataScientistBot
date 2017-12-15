@@ -1,4 +1,4 @@
-package main.java.modules.JGTModule;
+package main.java.modules.JGIModule;
 
 import main.java.thirdParty.acsdb.AcsdbToolsManager;
 import main.java.thirdParty.acsdb.model.Schema;
@@ -9,9 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.*;
 
-public class JGTMapper {
+public class JGIMapper {
 	
-	public JGTMapper(){}
+	public JGIMapper(){}
 	
 	public Set<List<String>> getKRankings(List<String> schema){
 		

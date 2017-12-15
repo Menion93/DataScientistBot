@@ -1,16 +1,16 @@
-package main.java.modules.JGTModule.graph;
+package main.java.modules.JGIModule.graph;
 
-import main.java.modules.JGTModule.JGTModule;
+import main.java.modules.JGIModule.JGIModule;
 import main.java.modules.conversational.ConvNode;
 
 /**
  * Created by Andrea on 21/11/2017.
  */
-public class JGTModuleAskMoreNode extends ConvNode {
+public class JGIModuleAskMoreNode extends ConvNode {
 
-    private JGTModule module;
+    private JGIModule module;
 
-    public JGTModuleAskMoreNode(String nodeId, JGTModule module) {
+    public JGIModuleAskMoreNode(String nodeId, JGIModule module) {
         super(nodeId);
         this.module = module;
     }

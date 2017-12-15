@@ -1,6 +1,6 @@
 package main.java.core;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.modules.defaultModules.SelectionModule.SelectionModule;
 import main.java.recommending.RecomSubscription;
 import main.java.session.Session;

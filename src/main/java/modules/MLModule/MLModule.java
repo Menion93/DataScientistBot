@@ -1,12 +1,11 @@
 package main.java.modules.MLModule;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.core.DataScienceModuleHandler;
 import main.java.database.DBRepository;
 import main.java.dataset.Dataset;
 import main.java.modules.Module;
 import main.java.modules.conversational.ConvMachine;
-import org.apache.commons.lang3.mutable.MutableDouble;
 
 import java.util.*;
 

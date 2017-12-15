@@ -1,6 +1,6 @@
 package main.java.modules.defaultModules.SelectionModule.graph;
 
-import main.java.ModuleSubscription;
+import main.java.modules.ModuleSubscription;
 import main.java.modules.conversational.ConvNode;
 import main.java.modules.defaultModules.SelectionModule.SelectionModule;
 import main.java.modules.Module;

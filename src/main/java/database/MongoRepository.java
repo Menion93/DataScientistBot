@@ -42,7 +42,7 @@ public class MongoRepository extends DBRepository {
     }
 
     @Override
-    public void saveJGTAnalysis(Map<String,Set<List<String>>> goodAnalysis) {
+    public void saveJGIAnalysis(Map<String,Set<List<String>>> goodAnalysis) {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
 
@@ -68,7 +68,7 @@ public class MongoRepository extends DBRepository {
     }
 
     @Override
-    public Map<String,Set<List<String>>> getJGTAnalysis() {
+    public Map<String,Set<List<String>>> getJGIAnalysis() {
         String sessionName = session.getSessionName();
         String branchName = session.getBranchName();
         Document document = new Document("sessionName", sessionName).append("branchName", branchName);

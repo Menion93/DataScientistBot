@@ -1,18 +1,18 @@
-package main.java.modules.JGTModule;
+package main.java.modules.JGIModule;
 
-import main.java.modules.JGTModule.graph.JGTModuleAskMoreNode;
-import main.java.modules.JGTModule.graph.JGTModuleSchInputNode;
+import main.java.modules.JGIModule.graph.JGIModuleAskMoreNode;
+import main.java.modules.JGIModule.graph.JGIModuleSchInputNode;
 import main.java.modules.conversational.ConvMachine;
 import main.java.modules.conversational.ConversationalFactory;
 
 /**
  * Created by Andrea on 21/11/2017.
  */
-public class JGTConvMachineFactory implements ConversationalFactory {
+public class JGIConvMachineFactory implements ConversationalFactory {
 
-    private JGTModule module;
+    private JGIModule module;
 
-    public JGTConvMachineFactory(JGTModule module){
+    public JGIConvMachineFactory(JGIModule module){
         this.module = module;
     }
 
@@ -20,8 +20,8 @@ public class JGTConvMachineFactory implements ConversationalFactory {
     public ConvMachine getConversationalMachine() {
         ConvMachine machine = new ConvMachine(module.getModuleHandler());
 
-        JGTModuleSchInputNode root = new JGTModuleSchInputNode("root",module);
-        JGTModuleAskMoreNode askMore = new JGTModuleAskMoreNode("ask_more", module);
+        JGIModuleSchInputNode root = new JGIModuleSchInputNode("root",module);
+        JGIModuleAskMoreNode askMore = new JGIModuleAskMoreNode("ask_more", module);
 
         root.addSuccessor("ask_more", askMore);
         askMore.addSuccessor("root", root);

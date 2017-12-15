@@ -1,6 +1,5 @@
 package main.java.modules.defaultModules.SelectionModule.graph;
 
-import main.java.ModuleSubscription;
 import main.java.database.MongoRecomRepository;
 import main.java.modules.conversational.ConvNode;
 import main.java.modules.defaultModules.SelectionModule.SelectionModule;
@@ -8,8 +7,6 @@ import main.java.modules.Module;
 import main.java.recommending.ModuleRecommendation;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
